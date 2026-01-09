@@ -1,0 +1,55 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPathWin": "C:\\Users\\15768\\esp\\v5.5\\esp-idf",
+  "idf.pythonInstallPath": "C:\\Users\\15768\\.espressif\\tools\\idf-python\\3.11.2\\python.exe",
+  "idf.openOcdConfigs": [
+    "board/esp32s3-builtin.cfg"
+  ],
+  "idf.portWin": "COM35",
+  "idf.toolsPathWin": "C:\\Users\\15768\\.espressif",
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32s3"
+  },
+  "clangd.path": "C:\\Users\\15768\\.espressif\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=C:\\Users\\15768\\.espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20241119\\xtensa-esp-elf\\bin\\xtensa-esp32-elf-gcc.exe",
+    "--compile-commands-dir=${workspaceFolder}\\build"
+  ],
+  "idf.flashType": "UART",
+  "files.associations": {
+    "encoder_input.h": "c",
+    "complex": "c",
+    "lvgl.h": "c",
+    "led_control.h": "c",
+    "charconv": "c",
+    "chrono": "c",
+    "optional": "c",
+    "format": "c",
+    "ratio": "c",
+    "system_error": "c",
+    "array": "c",
+    "functional": "c",
+    "regex": "c",
+    "tuple": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "stdint.h": "c",
+    "actions.h": "c",
+    "esp_lvgl_port.h": "c",
+    "rc522.h": "c",
+    "rc522_picc.h": "c",
+    "rc522_driver.h": "c",
+    "rc522_reader.h": "c",
+    "pin_cfg.h": "c",
+    "esp_lcd_panel_vendor.h": "c",
+    "esp_lcd_panel_io.h": "c",
+    "esp_task.h": "c",
+    "freertosconfig.h": "c",
+    "bitset": "c",
+    "string_view": "c",
+    "initializer_list": "c",
+    "span": "c",
+    "esp_err.h": "c"
+  }
+}

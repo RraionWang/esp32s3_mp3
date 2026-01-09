@@ -1,0 +1,98 @@
+#include "vars.h"
+#include "string.h"
+#include "esp_log.h"
+
+bool is_playing;
+
+bool get_var_is_playing() {
+    return is_playing;
+}
+
+void set_var_is_playing(bool value) {
+    is_playing = value;
+}
+
+
+
+char song_fulltime[100] = { 0 };
+
+const char *get_var_song_fulltime() {
+    return song_fulltime;
+}
+
+void set_var_song_fulltime(const char *value) {
+
+    if(strcmp(get_var_song_fulltime(),value)==0){
+        return ; 
+    }
+
+
+
+    strncpy(song_fulltime, value, sizeof(song_fulltime) / sizeof(char));
+    song_fulltime[sizeof(song_fulltime) / sizeof(char) - 1] = 0;
+}
+
+
+char current_song_time[100] = { 0 };
+
+const char *get_var_current_song_time() {
+    return current_song_time;
+}
+
+void set_var_current_song_time(const char *value) {
+
+
+        // 如果相同就不修改
+    if(strcmp(get_var_current_song_time(),value)==0){
+        return ; 
+    }
+
+
+
+    strncpy(current_song_time, value, sizeof(current_song_time) / sizeof(char));
+    current_song_time[sizeof(current_song_time) / sizeof(char) - 1] = 0;
+}
+
+
+
+
+
+
+
+// 设置歌词的代码
+
+char current_lrc[100] = { 0 };
+
+const char *get_var_current_lrc() {
+    return current_lrc;
+}
+
+void set_var_current_lrc(const char *value) {
+
+
+    // 如果相同就不修改
+    if(strcmp(get_var_current_lrc(),value)==0){
+        ESP_LOGI("LRC","歌词相同不修改") ; 
+        
+        return ; 
+    }
+
+
+    strncpy(current_lrc, value, sizeof(current_lrc) / sizeof(char));
+    current_lrc[sizeof(current_lrc) / sizeof(char) - 1] = 0;
+}
+
+
+
+// 设置音量
+
+int32_t vol;
+
+int32_t get_var_vol() {
+    return vol;
+}
+
+void set_var_vol(int32_t value) {
+    vol = value;
+}
+
