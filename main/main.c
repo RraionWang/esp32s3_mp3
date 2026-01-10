@@ -97,12 +97,8 @@ void app_main(void)
     return;
   }
 
-   wav_player_send_cmd(WAV_CMD_STOP);
+    // wav_player_send_cmd(WAV_CMD_STOP);
    // 初始化播放器之后立刻停止
-
-
-
-
 
     // int num_files = scan_files_by_extension(".wav");
     // if (num_files > 0) {
