@@ -51,3 +51,5 @@ Component config
          ├─ LFN encoding → UTF-8
          └─ Code page → 65001 (UTF-8)
 ```
+
+

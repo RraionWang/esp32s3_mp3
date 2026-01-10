@@ -15,7 +15,10 @@ extern "C" {
 // Flow global variables
 
 enum FlowGlobalVariables {
-    FLOW_GLOBAL_VARIABLE_PLAY_TEXT = 0
+    FLOW_GLOBAL_VARIABLE_PLAY_TEXT = 0,
+    FLOW_GLOBAL_VARIABLE_TIMER_HR_CNT = 1,
+    FLOW_GLOBAL_VARIABLE_TIMER_MIN_CNT = 2,
+    FLOW_GLOBAL_VARIABLE_TIMER_SEC_CNT = 3
 };
 
 // Native global variables
@@ -30,6 +33,16 @@ extern const char *get_var_current_lrc();
 extern void set_var_current_lrc(const char *value);
 extern int32_t get_var_vol();
 extern void set_var_vol(int32_t value);
+extern int32_t get_var_totol_timer_sec();
+extern void set_var_totol_timer_sec(int32_t value);
+extern int32_t get_var_current_timer_cnt();
+extern void set_var_current_timer_cnt(int32_t value);
+extern int32_t get_var_current_hr_cnt();
+extern void set_var_current_hr_cnt(int32_t value);
+extern int32_t get_var_current_min_cnt();
+extern void set_var_current_min_cnt(int32_t value);
+extern int32_t get_var_current_sec_cnt();
+extern void set_var_current_sec_cnt(int32_t value);
 
 
 #ifdef __cplusplus

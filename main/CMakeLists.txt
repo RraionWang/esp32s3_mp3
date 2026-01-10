@@ -14,6 +14,7 @@ idf_component_register(SRCS "main.c"
                             "ui/vars.c"
                            "ui/ui_font_cn_font.c"
                            "ui/ui_font_cn_font_20.c"
+                           "mytimer/mytimer.c"
 
                             
                     INCLUDE_DIRS "."
@@ -23,6 +24,7 @@ idf_component_register(SRCS "main.c"
                                
                                  "lcd"
                                 "sd"
+                                "mytimer"
 
 
                      REQUIRES fatfs  esp_driver_i2s

@@ -15,6 +15,7 @@
 #include "sd/sd.h"
 #include "screens.h"
 #include "esp_lvgl_port.h"
+#include "mytimer.h"
 
 static const char *TAG = "main";
 
@@ -64,6 +65,9 @@ static void lvgl_ui_timer_cb(lv_timer_t *timer)
 
 
 
+
+
+
 /* 主函数入口 */
 void app_main(void)
 {
@@ -86,12 +90,19 @@ void app_main(void)
     return;
   }
 
-  esp_err_t ret = wav_player_init(s_playlist, 0.05f); // 音量 50%
+  esp_err_t ret = wav_player_init(s_playlist, 0.00f); // 音量 50%
   if (ret != ESP_OK)
   {
     ESP_LOGE("main", "Failed to init wav player");
     return;
   }
+
+   wav_player_send_cmd(WAV_CMD_STOP);
+   // 初始化播放器之后立刻停止
+
+
+
+
 
     // int num_files = scan_files_by_extension(".wav");
     // if (num_files > 0) {

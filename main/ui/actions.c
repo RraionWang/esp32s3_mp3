@@ -11,7 +11,7 @@
 #include "audio.h"
 #include <stdint.h>
 #include "fonts.h"
-
+#include "mytimer/mytimer.h"
 static bool music_list_updated = false;
 
 static void music_list_btn_cb(lv_event_t *e)
@@ -132,3 +132,64 @@ void action_song_pause(lv_event_t *e) {
      wav_player_send_cmd(WAV_CMD_PAUSE);
         ESP_LOGI("TAG","暂停播放") ;
 }
+
+
+static uint64_t s_passed_sec  = 0;
+static uint64_t s_total_sec  = 0;
+
+static void timer_cb(uint64_t count)
+{
+    s_passed_sec++;
+
+    if (s_passed_sec > s_total_sec) {
+        mytimer_stop();
+        return;
+    }
+
+    uint64_t sec_left = s_total_sec - s_passed_sec;
+
+    int hr  = sec_left / 3600;
+    int min = (sec_left % 3600) / 60;
+    int sec = sec_left % 60;
+
+    set_var_current_hr_cnt(hr);
+    set_var_current_min_cnt(min);
+    set_var_current_sec_cnt(sec);
+
+    ESP_LOGI("TIMER","执行回调 %02d:%02d:%02d", hr, min, sec);
+
+
+    // 设置总计时变量
+    set_var_current_timer_cnt(sec_left) ; 
+    // lv_arc_set_value(objects.timer_indicator,sec_left) ; 
+}
+
+void action_start_timer(lv_event_t *e)
+{
+    s_total_sec  = get_var_totol_timer_sec();
+    s_passed_sec = 0;
+
+    int hr  = s_total_sec / 3600;
+    int min = (s_total_sec % 3600) / 60;
+    int sec = s_total_sec % 60;
+
+    set_var_current_hr_cnt(hr);
+    set_var_current_min_cnt(min);
+    set_var_current_sec_cnt(sec);
+
+    mytimer_start(1000000, timer_cb);
+}
+
+
+
+void action_stop_timer(lv_event_t *e) {
+
+    
+mytimer_stop() ; 
+
+     s_passed_sec  = 0;
+ s_total_sec  = 0;
+
+    // TODO: Implement action stop_timer here
+}
+

@@ -96,3 +96,67 @@ void set_var_vol(int32_t value) {
     vol = value;
 }
 
+
+
+
+// 设置当前时间
+int32_t current_timer_cnt;
+
+int32_t get_var_current_timer_cnt() {
+    return current_timer_cnt;
+}
+
+void set_var_current_timer_cnt(int32_t value) {
+    current_timer_cnt = value;
+}
+
+
+
+int32_t current_hr_cnt;
+
+int32_t get_var_current_hr_cnt() {
+    return current_hr_cnt;
+}
+
+void set_var_current_hr_cnt(int32_t value) {
+    current_hr_cnt = value;
+}
+
+
+int32_t current_min_cnt;
+
+int32_t get_var_current_min_cnt() {
+    return current_min_cnt;
+}
+
+void set_var_current_min_cnt(int32_t value) {
+    current_min_cnt = value;
+}
+
+
+
+int32_t current_sec_cnt;
+
+int32_t get_var_current_sec_cnt() {
+    return current_sec_cnt;
+}
+
+void set_var_current_sec_cnt(int32_t value) {
+    current_sec_cnt = value;
+}
+
+
+
+
+// 总时间
+int32_t totol_timer_sec;
+
+int32_t get_var_totol_timer_sec() {
+    return totol_timer_sec;
+}
+
+void set_var_totol_timer_sec(int32_t value) {
+    totol_timer_sec = value;
+}
+
+
