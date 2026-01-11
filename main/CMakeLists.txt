@@ -15,6 +15,9 @@ idf_component_register(SRCS "main.c"
                            "ui/ui_font_cn_font.c"
                            "ui/ui_font_cn_font_20.c"
                            "mytimer/mytimer.c"
+                           "record/record.c"
+                           "i2c_sensor/qmi.c"
+                                 "i2c_sensor/aht20.c"
 
                             
                     INCLUDE_DIRS "."
@@ -25,6 +28,8 @@ idf_component_register(SRCS "main.c"
                                  "lcd"
                                 "sd"
                                 "mytimer"
+                                "record"
+                                "i2c_sensor"
 
 
                      REQUIRES fatfs  esp_driver_i2s

@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include "fonts.h"
 #include "mytimer/mytimer.h"
+#include "record/record.h"
 static bool music_list_updated = false;
 
 static void music_list_btn_cb(lv_event_t *e)
@@ -193,3 +194,22 @@ mytimer_stop() ;
     // TODO: Implement action stop_timer here
 }
 
+
+// 暂停录音
+void action_record_stop(lv_event_t *e) {
+    ESP_LOGI("REC","停止录音") ; 
+    //  record_stop();
+    // TODO: Implement action record_stop here
+}
+
+
+// 开始录音
+
+void action_record_start(lv_event_t *e) {
+
+
+      ESP_LOGI("REC","开始录音") ; 
+    //   record_start("/sdcard/rec_001.wav");
+
+    // TODO: Implement action record_start here
+}

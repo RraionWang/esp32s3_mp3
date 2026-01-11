@@ -16,6 +16,8 @@ extern void action_song_continue(lv_event_t * e);
 extern void action_song_pause(lv_event_t * e);
 extern void action_start_timer(lv_event_t * e);
 extern void action_stop_timer(lv_event_t * e);
+extern void action_record_stop(lv_event_t * e);
+extern void action_record_start(lv_event_t * e);
 
 
 #ifdef __cplusplus

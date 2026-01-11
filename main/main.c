@@ -16,6 +16,10 @@
 #include "screens.h"
 #include "esp_lvgl_port.h"
 #include "mytimer.h"
+#include "record/record.h"
+#include "i2c_sensor/aht20.h"
+#include "i2c_sensor/qmi.h"
+
 
 static const char *TAG = "main";
 
@@ -71,11 +75,23 @@ static void lvgl_ui_timer_cb(lv_timer_t *timer)
 /* 主函数入口 */
 void app_main(void)
 {
+
+
+  //   //  初始化录音
+  //  init_mic_debug();
+
+
   sdcard_init();
+
+
 
   ESP_ERROR_CHECK(app_lcd_init());
   ESP_ERROR_CHECK(app_lvgl_init());
   ctp_init();
+
+  aht20_init(s_bus) ; 
+  qmi8658_init(s_bus) ; 
+
   ui_init();
   if (lvgl_port_lock(0)) {
     lv_timer_create(lvgl_ui_timer_cb, 200, NULL);
@@ -97,19 +113,32 @@ void app_main(void)
     return;
   }
 
-    // wav_player_send_cmd(WAV_CMD_STOP);
-   // 初始化播放器之后立刻停止
 
-    // int num_files = scan_files_by_extension(".wav");
-    // if (num_files > 0) {
-    //     char (*files)[50] = get_filtered_files();
-    //     ESP_LOGI(TAG, "Listing .jpg files:");
-    //     for (int i = 0; i < num_files; i++) {
-    //         printf("  [%d] %s\n", i, files[i]);
-    //     }
-    // } else {
-    //     ESP_LOGW(TAG, "No .wav files found.");
-    // }
+
+
+    
+    // xTaskCreate(record_to_sd_task, "record_to_sd_task", 8192, NULL, 5, NULL);
+
+
+    // wav_player_send_cmd(WAV_CMD_STOP);
+  // 初始化播放器之后立刻停止
+
+    int num_files = scan_files_by_extension(".wav");
+    if (num_files > 0) {
+        char (*files)[50] = get_filtered_files();
+        ESP_LOGI(TAG, "Listing .jpg files:");
+        for (int i = 0; i < num_files; i++) {
+            printf("  [%d] %s\n", i, files[i]);
+        }
+    } else {
+        ESP_LOGW(TAG, "No .wav files found.");
+    }
+
+
+     aht20_start_task(); // 初始化aht20 
+     qmi8658_start_task() ; // 初始化加速度 
+
+
 
 
 }

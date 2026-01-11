@@ -18,7 +18,8 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_PLAY_TEXT = 0,
     FLOW_GLOBAL_VARIABLE_TIMER_HR_CNT = 1,
     FLOW_GLOBAL_VARIABLE_TIMER_MIN_CNT = 2,
-    FLOW_GLOBAL_VARIABLE_TIMER_SEC_CNT = 3
+    FLOW_GLOBAL_VARIABLE_TIMER_SEC_CNT = 3,
+    FLOW_GLOBAL_VARIABLE_RECORD_TEXT = 4
 };
 
 // Native global variables
@@ -43,6 +44,12 @@ extern int32_t get_var_current_min_cnt();
 extern void set_var_current_min_cnt(int32_t value);
 extern int32_t get_var_current_sec_cnt();
 extern void set_var_current_sec_cnt(int32_t value);
+extern bool get_var_is_recording();
+extern void set_var_is_recording(bool value);
+extern const char *get_var_qmi_text();
+extern void set_var_qmi_text(const char *value);
+extern const char *get_var_aht20_text();
+extern void set_var_aht20_text(const char *value);
 
 
 #ifdef __cplusplus

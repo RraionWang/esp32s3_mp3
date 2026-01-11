@@ -160,3 +160,45 @@ void set_var_totol_timer_sec(int32_t value) {
 }
 
 
+// 录音标志
+
+bool is_recording;
+
+bool get_var_is_recording() {
+    return is_recording;
+}
+
+void set_var_is_recording(bool value) {
+    is_recording = value;
+}
+
+
+
+// qmi 文本
+char qmi_text[100] = { 0 };
+
+const char *get_var_qmi_text() {
+    return qmi_text;
+}
+
+void set_var_qmi_text(const char *value) {
+    strncpy(qmi_text, value, sizeof(qmi_text) / sizeof(char));
+    qmi_text[sizeof(qmi_text) / sizeof(char) - 1] = 0;
+}
+
+
+
+// aht20 文本
+
+
+char aht20_text[100] = { 0 };
+
+const char *get_var_aht20_text() {
+    return aht20_text;
+}
+
+void set_var_aht20_text(const char *value) {
+    strncpy(aht20_text, value, sizeof(aht20_text) / sizeof(char));
+    aht20_text[sizeof(aht20_text) / sizeof(char) - 1] = 0;
+}
+

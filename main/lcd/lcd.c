@@ -147,8 +147,9 @@ esp_err_t app_lvgl_init(void)
 #define TP_GAP_X 0
 #define TP_GAP_Y 34
 
-static i2c_master_bus_handle_t s_bus = NULL;
-static i2c_master_dev_handle_t s_dev = NULL;
+ i2c_master_bus_handle_t s_bus = NULL;
+ i2c_master_dev_handle_t s_dev = NULL;
+ 
 static lv_indev_t *s_indev = NULL;
 
 /* ========== 基础I2C操作函数 ========== */

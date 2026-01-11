@@ -273,7 +273,7 @@ static bool read_wav_header(FILE *fp)
 /* ===== I2S 初始化 ===== */
 static esp_err_t i2s_init(void)
 {
-    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_AUTO, I2S_ROLE_MASTER);
+    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_1, I2S_ROLE_MASTER);
     ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, &s_tx_chan, NULL));
 
     i2s_std_slot_config_t slot_cfg = {
