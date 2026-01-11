@@ -60,6 +60,10 @@ extern const char *get_var_time_txt();
 extern void set_var_time_txt(const char *value);
 extern const char *get_var_cali_status();
 extern void set_var_cali_status(const char *value);
+extern int32_t get_var_current_sram_used();
+extern void set_var_current_sram_used(int32_t value);
+extern int32_t get_var_current_psram_used();
+extern void set_var_current_psram_used(int32_t value);
 
 
 #ifdef __cplusplus

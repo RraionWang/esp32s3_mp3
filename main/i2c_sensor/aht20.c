@@ -14,7 +14,7 @@
 #include "driver/i2c_master.h"
 #include "vars.h"
 #include "aht20.h"
-
+#include "esp_heap_caps.h"
 // static const char *TAG = "AHT20";
 static const char *TAG = "AHT20";
 
@@ -160,15 +160,36 @@ static void aht20_task(void *arg)
 /* =========================================================
  * 启动任务接口（给 app_main 用）
  * ========================================================= */
+
+
+StaticTask_t *pxTaskBuffer = NULL;
+StackType_t  *puxStackBuffer = NULL;
+TaskHandle_t aht20TaskHandle = NULL;
+
+#define AHT20_STACK_SIZE 4096
+
+
 void aht20_start_task(void)
 {
-    xTaskCreate(
-        aht20_task,
-        "aht20_task",
-        4096,
-        NULL,
-        5,
-        NULL);
+    pxTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // 3. 在 PSRAM 为 Stack 申请内存（Stack 很大，放外部省空间）
+    puxStackBuffer = (StackType_t *)heap_caps_malloc(AHT20_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
+        ESP_LOGE("TASK", "内存不足，无法创建静态任务！");
+        return;
+    }
+        aht20TaskHandle = xTaskCreateStatic(
+        aht20_task,   // 任务函数
+        "cube_static_task",     // 任务名
+        AHT20_STACK_SIZE,        // 栈深度（字节）
+        NULL,                   // 参数
+        4,                      // 优先级
+        puxStackBuffer,         // 栈指向 PSRAM
+        pxTaskBuffer            // TCB 指向内部 RAM
+    );
+
 }
 
 

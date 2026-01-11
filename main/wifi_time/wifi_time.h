@@ -40,7 +40,7 @@ void wifi_time_sync_now(void);
 void ui_time_timer_start(void); 
 
 
-void wifi_time_task_init(void) ; 
+ void wifi_time_task_init(void) ; 
 
 void ui_time_queue_init() ; 
 

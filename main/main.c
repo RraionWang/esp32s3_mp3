@@ -54,8 +54,8 @@ static void lvgl_ui_timer_cb(lv_timer_t *timer)
 {
   (void)timer;
   wav_player_ui_msg_t msg;
-  ui_time_msg_t tmsg;
-  while (wav_player_ui_dequeue(&msg) || ui_time_dequeue(&tmsg))
+
+  while (wav_player_ui_dequeue(&msg) )
   {
     if (msg.type == WAV_UI_UPDATE_TIME)
     {
@@ -72,6 +72,27 @@ static void lvgl_ui_timer_cb(lv_timer_t *timer)
     {
       set_var_current_lrc("");
     }
+
+
+
+}
+
+  ui_tick();
+
+  
+}
+
+
+
+
+static void lvgl_ui_wifitimer_timer_cb(lv_timer_t *timer)
+{
+  (void)timer;
+ 
+  ui_time_msg_t tmsg;
+  while (ui_time_dequeue(&tmsg))
+  {
+    
 
     // 消息
     if (tmsg.type == UI_TIME_UPDATE)
@@ -93,18 +114,50 @@ static void lvgl_ui_timer_cb(lv_timer_t *timer)
   ui_tick();
 }
 
+
+
+#include "esp_heap_caps.h"
+
+void print_ram_info() {
+    // 1. 内部 RAM (速度快，但容量小，通常给 DMA 或关键任务用)
+    size_t internal_free = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    
+    // 2. 外部 PSRAM (容量大，速度稍慢，存放 UI 图片、大型缓冲区)
+    size_t psram_free = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+    // 3. 历史上曾经出现过的最低剩余内存 (水位线，用于检查是否接近崩溃)
+    size_t min_free = esp_get_minimum_free_heap_size();
+
+    ESP_LOGI("ram","\n--- 内存状态报告 ---\n");
+    ESP_LOGI("ram","内部 RAM 剩余: %d KB\n", internal_free / 1024);
+    set_var_current_sram_used(512- internal_free/1024) ; 
+    ESP_LOGI("ram","外部 PSRAM 剩余: %d KB\n", psram_free / 1024);
+    set_var_current_psram_used(8192- psram_free/1024) ; 
+    ESP_LOGI("ram","历史最低水位线: %d KB\n", min_free / 1024);
+    ESP_LOGI("ram","--------------------\n");
+}
+
+
+
 /* 主函数入口 */
 void app_main(void)
 {
 
   //   //  初始化录音
   //  init_mic_debug();
+  // 目前录音电路有问题 废弃
 
-  wifi_time_sys_init();
-  ui_time_queue_init(); // 创建时间队列
 
-  wifi_time_set_ap("RX-Bridge", "RX3.14159");
-  wifi_time_task_init(); // 持续执行更新函数
+
+       wifi_time_sys_init();
+   ui_time_queue_init(); // 创建时间队列
+
+   wifi_time_set_ap("RX-Bridge", "RX3.14159");
+    wifi_time_task_init(); // 持续执行更新函数
+   
+
+
+
 
   sdcard_init();
 
@@ -116,11 +169,25 @@ void app_main(void)
   qmi8658_init(s_bus);
 
   ui_init();
+
+
   if (lvgl_port_lock(0))
   {
-    lv_timer_create(lvgl_ui_timer_cb, 200, NULL);
+    lv_timer_create(lvgl_ui_timer_cb, 200, NULL); // 
+ 
     lvgl_port_unlock();
   }
+
+    if (lvgl_port_lock(0))
+  {
+  
+    lv_timer_create(lvgl_ui_wifitimer_timer_cb, 500, NULL);
+    lvgl_port_unlock();
+  }
+
+
+    ui_time_timer_start(); // 开启定时器
+
 
   // 2. 初始化播放器
   int playlist_count = build_playlist_from_sd();
@@ -162,7 +229,25 @@ void app_main(void)
 
   draw_cube_start_angle_task(); // 持续运行重绘
 
-  ui_time_timer_start(); // 开启定时器
+    ui_time_timer_start(); // 开启定时器
+
+
+
+  // 打印内存信息
+
+while (1)
+{
+
+   print_ram_info();
+   vTaskDelay(pdMS_TO_TICKS(2000)) ;
+
+
+  /* code */
+}
+
+  
+
+
 }
 
 // 可以使用这种命令来进行播放的切换等等

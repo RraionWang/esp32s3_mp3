@@ -16,6 +16,14 @@
 #include "qmi.h"
 #include "draw_cube.h"
 #include "wifi_time.h"
+#include "aht20.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+extern TaskHandle_t aht20TaskHandle;
+extern TaskHandle_t qmiTubeTaskHandle;
+extern TaskHandle_t drawTubeTaskHandle;
+
 
 static bool music_list_updated = false;
 
@@ -236,17 +244,90 @@ void set_var_current_time_text(const char *value)
 void action_gen_cube_widget(lv_event_t *e)
 {
 
+    // if(eTaskGetState(aht20TaskHandle) == eSuspended){
+    //     vTaskResume(aht20TaskHandle) ; 
+    // }
+
+      
+
+    // if( eTaskGetState(qmiTubeTaskHandle)==eSuspended){
+    //       vTaskResume(qmiTubeTaskHandle) ; 
+    // }
+
+
+
     draw_cube_create(objects.cord_obj);
+
+
+    // if( eTaskGetState(qmiTubeTaskHandle)==eSuspended && eTaskGetState(drawTubeTaskHandle) == eRunning){
+    //     vTaskSuspend(qmiTubeTaskHandle) ; 
+    // }
+
+
+
 }
 
 // 销毁立方体
 void action_destroy_cube_widget(lv_event_t *e)
+
+
 {
 
+    // if(eTaskGetState(aht20TaskHandle) == eRunning){
+    //     vTaskSuspend(aht20TaskHandle) ; 
+    // }
+
     draw_cube_destroy();
+
+
+    //     if(eTaskGetState(qmiTubeTaskHandle) == eRunning){
+    //     vTaskSuspend(qmiTubeTaskHandle) ; 
+    // }
+
+    // if(eTaskGetState(qmiTubeTaskHandle) == eSuspended && eTaskGetState(drawTubeTaskHandle)==eRunning){
+    //       vTaskSuspend(drawTubeTaskHandle) ; 
+    // }
+
+
+
 }
 
 // 校准时间
+
+
+
+
+
+// // 全局信号量
+// SemaphoreHandle_t s_time_sync_sem = NULL;
+
+// static void wifi_time_task(void *pvParameters) {
+//     while (1) {
+//         // 使用 portMAX_DELAY 确保在没有信号量时任务处于阻塞态，完全不占 CPU
+//         if (xSemaphoreTake(s_time_sync_sem, portMAX_DELAY) == pdTRUE) {
+//             wifi_time_sync_now();
+//         }
+//     }
+// }
+
+// // 设置为比较不重要的
+// void wifi_time_task_init(void)
+// {
+//     s_time_sync_sem = xSemaphoreCreateBinary();
+
+//     xTaskCreatePinnedToCore(
+//         wifi_time_task,
+//         "wifi_time_task",
+//         8192, // WiFi 必须大栈
+//         NULL,
+//         1,
+//         NULL,
+//         1 // Core 0（WiFi 必须）
+//     );
+// }
+
+
+
 
 void action_cali_time(lv_event_t *e)
 {
@@ -254,4 +335,8 @@ void action_cali_time(lv_event_t *e)
     {
         xSemaphoreGive(s_time_sync_sem);
     }
+
+
+        // wifi_time_sync_now(); // 目前使用信号会出现音乐无法播放的问题
+
 }

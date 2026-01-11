@@ -247,3 +247,30 @@ void set_var_cali_status(const char *value)
     strncpy(cali_status, value, sizeof(cali_status) / sizeof(char));
     cali_status[sizeof(cali_status) / sizeof(char) - 1] = 0;
 }
+
+
+// 设置内存使用数据
+
+int32_t current_sram_used;
+
+int32_t get_var_current_sram_used() {
+    return current_sram_used;
+}
+
+void set_var_current_sram_used(int32_t value) {
+    current_sram_used = value;
+}
+
+
+int32_t current_psram_used;
+
+int32_t get_var_current_psram_used() {
+    return current_psram_used;
+}
+
+void set_var_current_psram_used(int32_t value) {
+    current_psram_used = value;
+}
+
+
+

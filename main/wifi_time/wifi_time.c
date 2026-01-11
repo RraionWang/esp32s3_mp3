@@ -168,6 +168,11 @@ void wifi_time_sys_init(void)
     ESP_ERROR_CHECK(esp_event_handler_register(
         WIFI_EVENT, ESP_EVENT_ANY_ID,
         &wifi_event_handler, NULL));
+
+     
+ 
+
+
 }
 
 // ------------------------------------------------
@@ -175,6 +180,9 @@ void wifi_time_sys_init(void)
 // ------------------------------------------------
 void wifi_time_sync_now(void)
 {
+   
+
+
     char ssid[32] = {0};
     char pass[64] = {0};
 
@@ -261,7 +269,7 @@ void wifi_time_sync_now(void)
     esp_netif_sntp_deinit();
     esp_wifi_stop();
 
-    // esp_wifi_deinit();
+
 
     ESP_LOGI(TAG, "WiFi stopped after sync");
 }
@@ -308,29 +316,56 @@ void ui_time_timer_start(void)
 // 全局信号量
 SemaphoreHandle_t s_time_sync_sem = NULL;
 
-static void wifi_time_task(void *arg)
-{
-    for (;;)
-    {
-        // 等待按钮信号（永久阻塞，不占 CPU）
-        xSemaphoreTake(s_time_sync_sem, portMAX_DELAY);
-
-        ESP_LOGI("wifi_time", "Time sync triggered");
-        wifi_time_sync_now(); // 阻塞也没关系
+static void wifi_time_task(void *pvParameters) {
+    while (1) {
+        // 使用 portMAX_DELAY 确保在没有信号量时任务处于阻塞态，完全不占 CPU
+        if (xSemaphoreTake(s_time_sync_sem, portMAX_DELAY) == pdTRUE) {
+            wifi_time_sync_now();
+        }
     }
 }
 
+
+// TaskHandle_t witiTimeTaskHandle = NULL;
+// static StaticTask_t *xTaskBuffer = NULL;
+// static StackType_t *xStackBuffer = NULL;
+// #define TASK_STACK_SIZE 8192
+
+// 设置为比较不重要的
 void wifi_time_task_init(void)
 {
     s_time_sync_sem = xSemaphoreCreateBinary();
 
+
+    // // 1. 为任务控制块 (TCB) 申请内存，建议放在内部 RAM (MALLOC_CAP_INTERNAL) 以提高性能
+    // xTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // // 2. 为任务栈申请内存，放在 PSRAM (MALLOC_CAP_SPIRAM)
+    // xStackBuffer = (StackType_t *)heap_caps_malloc(TASK_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+
+    // xTaskCreateStaticPinnedToCore(
+    //     wifi_time_task,
+    //     "wifi_time_task",
+    //     TASK_STACK_SIZE, // WiFi 必须大栈
+    //     NULL,
+    //     4,
+    //     xStackBuffer,
+    //     xTaskBuffer,
+
+    //     1 // Core 0（WiFi 必须）
+    // );
+
+
+    // 放到内部ram里面就可以增大成功概率
     xTaskCreatePinnedToCore(
         wifi_time_task,
         "wifi_time_task",
-        4096, // WiFi 必须大栈
+        8192, // WiFi 必须大栈
         NULL,
-        5,
+        4,
         NULL,
-        0 // Core 0（WiFi 必须）
+      
+        1 // Core 0（WiFi 必须）
     );
 }

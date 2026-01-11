@@ -283,9 +283,11 @@ static void qmi_task(void *arg)
     }
 }
 
+
+
 void qmi8658_start_task(void)
 {
-    xTaskCreate(qmi_task, "qmi8658_task", 4096, NULL, 5, NULL);
+    xTaskCreate(qmi_task, "qmi8658_task", 2048, NULL, 5, NULL);
 }
 
 

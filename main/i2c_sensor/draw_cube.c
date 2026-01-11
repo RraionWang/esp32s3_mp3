@@ -8,12 +8,16 @@
 /* ================= 尺寸 ================= */
 #define CUBE_W 130
 #define CUBE_H 130
+#define CUBE_BUF_SIZE (CUBE_W * CUBE_H * 4) // ARGB8888 占 4 字节
 
 /* ================= Canvas ================= */
 static lv_obj_t *s_canvas = NULL;
 
 /* Canvas draw buffer（官方示例写法） */
-LV_DRAW_BUF_DEFINE_STATIC(s_draw_buf, CUBE_W, CUBE_H, LV_COLOR_FORMAT_ARGB8888);
+// LV_DRAW_BUF_DEFINE_STATIC(s_draw_buf, CUBE_W, CUBE_H, LV_COLOR_FORMAT_ARGB8888);
+static uint8_t *s_canvas_buf = NULL; // 用于指向 PSRAM 中的内存
+
+static lv_draw_buf_t s_draw_buf;    // 改为普通的结构体
 
 /* ================= 姿态角（弧度） ================= */
 static float s_pitch = 0.0f;
@@ -40,7 +44,20 @@ void draw_cube_create(lv_obj_t *parent)
 {
     if(s_canvas) return;
 
-    LV_DRAW_BUF_INIT_STATIC(s_draw_buf);
+    // LV_DRAW_BUF_INIT_STATIC(s_draw_buf);
+
+
+    // 1. 从 PSRAM 申请 Canvas 缓冲区内存
+    if (s_canvas_buf == NULL) {
+        // 使用 MALLOC_CAP_SPIRAM 确保分配到外部内存
+        s_canvas_buf = (uint8_t *)heap_caps_malloc(CUBE_BUF_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    }
+
+    if (s_canvas_buf == NULL) {
+        return; // 内存申请失败处理
+    }
+    // 初始化buf
+lv_draw_buf_init(&s_draw_buf, CUBE_W, CUBE_H, LV_COLOR_FORMAT_ARGB8888, 0, s_canvas_buf, CUBE_BUF_SIZE);
 
     s_canvas = lv_canvas_create(parent);
     lv_obj_set_size(s_canvas, CUBE_W, CUBE_H);
@@ -71,10 +88,14 @@ void draw_cube_set_angle(float pitch_deg, float roll_deg)
     draw_cube_redraw();
 }
 
+static bool is_drawing = false;
+
+
 /* ================= 重绘 ================= */
 void draw_cube_redraw(void)
 {
-    if(!s_canvas) return;
+ if(!s_canvas || is_drawing) return;
+is_drawing = true;
 
     /* 清屏 */
     lv_canvas_fill_bg(s_canvas, lv_color_white(), LV_OPA_COVER);
@@ -127,6 +148,7 @@ void draw_cube_redraw(void)
 
     /* 提交 layer（官方示例） */
     lv_canvas_finish_layer(s_canvas, &layer);
+    is_drawing = false;
 }
 
 

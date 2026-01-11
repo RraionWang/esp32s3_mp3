@@ -17,6 +17,7 @@
 #include "driver/gpio.h"
 #include "vars.h"
 #include "screens.h"
+#include "esp_heap_caps.h"
 
 
 
@@ -87,7 +88,14 @@ typedef struct {
     char text[MAX_LRC_TEXT];
 } lrc_line_t;
 
-static lrc_line_t s_lrc_lines[MAX_LRC_LINES];
+// static lrc_line_t s_lrc_lines[MAX_LRC_LINES];
+
+
+// 修改定义，申请内存到psram
+static lrc_line_t *s_lrc_lines = NULL;
+
+
+
 static int s_lrc_count = 0;
 static int s_lrc_index = -1;
 
@@ -628,14 +636,14 @@ uint32_t now = xTaskGetTickCount() * portTICK_PERIOD_MS;
 if (now - last_print_ms >= 500) {
     last_print_ms = now;
 
-    // ESP_LOGI(TAG,
-    //     "Time: %02d:%02d / %02d:%02d (%.1f%%)",
-    //     (int)(current_time / 60),
-    //     (int)((int)current_time % 60),
-    //     (int)(total_time / 60),
-    //     (int)((int)total_time % 60),
-    //     percent
-    // );
+    ESP_LOGI(TAG,
+        "Time: %02d:%02d / %02d:%02d (%.1f%%)",
+        (int)(current_time / 60),
+        (int)((int)current_time % 60),
+        (int)(total_time / 60),
+        (int)((int)total_time % 60),
+        percent
+    );
 
     format_time_mmss(current_time, s_cur_time_str, sizeof(s_cur_time_str));
     format_time_mmss(total_time, s_total_time_str, sizeof(s_total_time_str));
@@ -705,6 +713,13 @@ if (now - last_print_ms >= 500) {
 
 esp_err_t wav_player_init(const char *playlist[], float volume)
 {
+
+
+    // 在 wav_player_init 中申请
+s_lrc_lines = heap_caps_malloc(sizeof(lrc_line_t) * MAX_LRC_LINES, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+
+
     // 计算歌单长度
     int len = 0;
     while (playlist[len] != NULL)
@@ -743,7 +758,7 @@ esp_err_t wav_player_init(const char *playlist[], float volume)
     ESP_ERROR_CHECK(i2s_init());
 
     // 启动播放任务
-    xTaskCreatePinnedToCore(wav_play_task, "wav_player", 8192, NULL, 5, NULL,0);
+    xTaskCreatePinnedToCore(wav_play_task, "wav_player", 8192, NULL, 7, NULL,0);
 
     ESP_LOGI(TAG, "WAV player initialized with %d tracks", len);
     return ESP_OK;
