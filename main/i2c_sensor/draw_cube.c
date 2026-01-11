@@ -6,8 +6,8 @@
 #include "esp_lvgl_port.h"
 
 /* ================= 尺寸 ================= */
-#define CUBE_W 100
-#define CUBE_H 100
+#define CUBE_W 130
+#define CUBE_H 130
 
 /* ================= Canvas ================= */
 static lv_obj_t *s_canvas = NULL;

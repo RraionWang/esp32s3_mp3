@@ -148,7 +148,7 @@ static bool lrc_load_file(const char *path)
 
     fclose(fp);
 
-    ESP_LOGI(TAG, "Loaded %d LRC lines", s_lrc_count);
+    // ESP_LOGI(TAG, "Loaded %d LRC lines", s_lrc_count);
     return s_lrc_count > 0;
 }
 
@@ -628,14 +628,14 @@ uint32_t now = xTaskGetTickCount() * portTICK_PERIOD_MS;
 if (now - last_print_ms >= 500) {
     last_print_ms = now;
 
-    ESP_LOGI(TAG,
-        "Time: %02d:%02d / %02d:%02d (%.1f%%)",
-        (int)(current_time / 60),
-        (int)((int)current_time % 60),
-        (int)(total_time / 60),
-        (int)((int)total_time % 60),
-        percent
-    );
+    // ESP_LOGI(TAG,
+    //     "Time: %02d:%02d / %02d:%02d (%.1f%%)",
+    //     (int)(current_time / 60),
+    //     (int)((int)current_time % 60),
+    //     (int)(total_time / 60),
+    //     (int)((int)total_time % 60),
+    //     percent
+    // );
 
     format_time_mmss(current_time, s_cur_time_str, sizeof(s_cur_time_str));
     format_time_mmss(total_time, s_total_time_str, sizeof(s_total_time_str));

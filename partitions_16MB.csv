@@ -1,0 +1,10 @@
+# Name,   Type, SubType, Offset,  Size
+
+# --- 系统 ---
+nvs,      data, nvs,     0x9000,  0x6000
+
+# --- 应用（必须 0x10000 对齐） ---
+factory,  app,  factory, 0x10000, 0x700000
+
+# --- 文件系统 ---
+spiffs,   data, spiffs,  ,         0x800000

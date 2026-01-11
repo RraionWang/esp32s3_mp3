@@ -56,6 +56,10 @@ extern float get_var_pitch_var();
 extern void set_var_pitch_var(float value);
 extern float get_var_roll_var();
 extern void set_var_roll_var(float value);
+extern const char *get_var_time_txt();
+extern void set_var_time_txt(const char *value);
+extern const char *get_var_cali_status();
+extern void set_var_cali_status(const char *value);
 
 
 #ifdef __cplusplus

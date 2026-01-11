@@ -130,9 +130,9 @@ static void aht20_task(void *arg)
         {
             if (aht20_read_data(&temp, &humi) == ESP_OK)
             {
-                ESP_LOGI(TAG,
-                         "Temperature: %.2f °C | Humidity: %.2f %%RH",
-                         temp, humi);
+                // ESP_LOGI(TAG,
+                //          "Temperature: %.2f °C | Humidity: %.2f %%RH",
+                //          temp, humi);
 
                 snprintf(
                     aht20_str,

@@ -244,7 +244,7 @@ static void qmi_task(void *arg)
              
                 "ACC:X:%d Y:%d Z:%d\n"
                 "GYR:X:%d Y:%d Z:%d\n"
-                "Ang:Pitch:%.2f Roll :%.2f",
+                "Pitch:%.2f Roll :%.2f",
               
                 ax, ay, az,
                 gx, gy, gz,
@@ -271,8 +271,8 @@ static void qmi_task(void *arg)
 
 
 
-
-            ESP_LOGI(TAG, "%s", s_qmi_str);
+            // 打印
+            // ESP_LOGI(TAG, "%s", s_qmi_str);
 
         } else if (ret != ESP_ERR_INVALID_STATE) {
             // INVALID_STATE = 数据没就绪，不算错误
