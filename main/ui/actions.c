@@ -13,6 +13,9 @@
 #include "fonts.h"
 #include "mytimer/mytimer.h"
 #include "record/record.h"
+#include "qmi.h"
+#include "draw_cube.h"
+
 static bool music_list_updated = false;
 
 static void music_list_btn_cb(lv_event_t *e)
@@ -138,6 +141,10 @@ void action_song_pause(lv_event_t *e) {
 static uint64_t s_passed_sec  = 0;
 static uint64_t s_total_sec  = 0;
 
+
+static char time_txt[128];
+
+
 static void timer_cb(uint64_t count)
 {
     s_passed_sec++;
@@ -157,13 +164,36 @@ static void timer_cb(uint64_t count)
     set_var_current_min_cnt(min);
     set_var_current_sec_cnt(sec);
 
+
+
+
+       snprintf(
+                time_txt,
+                sizeof(time_txt),
+             
+                "%02d:%02d:%02d\n",              
+                hr,min,sec
+            );
+
+    set_var_current_time_text(time_txt) ;
+
+
+
     ESP_LOGI("TIMER","执行回调 %02d:%02d:%02d", hr, min, sec);
+
+
+
 
 
     // 设置总计时变量
     set_var_current_timer_cnt(sec_left) ; 
     // lv_arc_set_value(objects.timer_indicator,sec_left) ; 
 }
+
+
+
+
+
 
 void action_start_timer(lv_event_t *e)
 {
@@ -177,6 +207,23 @@ void action_start_timer(lv_event_t *e)
     set_var_current_hr_cnt(hr);
     set_var_current_min_cnt(min);
     set_var_current_sec_cnt(sec);
+
+
+    
+       snprintf(
+                time_txt,
+                sizeof(time_txt),
+             
+                "%02d:%02d:%02d\n",              
+                hr,min,sec
+            );
+
+    set_var_current_time_text(time_txt) ;
+
+
+
+
+
 
     mytimer_start(1000000, timer_cb);
 }
@@ -212,4 +259,42 @@ void action_record_start(lv_event_t *e) {
     //   record_start("/sdcard/rec_001.wav");
 
     // TODO: Implement action record_start here
+}
+
+
+
+char current_time_text[100] = { 0 };
+
+const char *get_var_current_time_text() {
+    return current_time_text;
+}
+
+void set_var_current_time_text(const char *value) {
+    strncpy(current_time_text, value, sizeof(current_time_text) / sizeof(char));
+    current_time_text[sizeof(current_time_text) / sizeof(char) - 1] = 0;
+}
+
+
+
+
+
+
+
+
+
+
+// 生成立方体
+void action_gen_cube_widget(lv_event_t *e) {
+
+        draw_cube_create(objects.cord_obj);
+}
+
+
+// 销毁立方体
+void action_destroy_cube_widget(lv_event_t *e) {
+
+
+  
+draw_cube_destroy();
+
 }

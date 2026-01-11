@@ -19,6 +19,7 @@
 #include "record/record.h"
 #include "i2c_sensor/aht20.h"
 #include "i2c_sensor/qmi.h"
+#include "draw_cube.h" 
 
 
 static const char *TAG = "main";
@@ -138,6 +139,9 @@ void app_main(void)
      aht20_start_task(); // 初始化aht20 
      qmi8658_start_task() ; // 初始化加速度 
 
+      draw_cube_start_angle_task(); // 持续运行重绘
+
+
 
 
 
@@ -147,3 +151,6 @@ void app_main(void)
 // 可以使用这种命令来进行播放的切换等等
 
 //    wav_player_send_cmd(WAV_CMD_STOP);
+
+
+

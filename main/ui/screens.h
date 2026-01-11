@@ -47,19 +47,16 @@ typedef struct _objects_t {
     lv_obj_t *roller_min_1;
     lv_obj_t *obj23;
     lv_obj_t *obj24;
+    lv_obj_t *timer_indicator;
     lv_obj_t *obj25;
     lv_obj_t *obj26;
-    lv_obj_t *timer_indicator;
+    lv_obj_t *record_chart;
     lv_obj_t *obj27;
     lv_obj_t *obj28;
+    lv_obj_t *cord_obj;
     lv_obj_t *obj29;
     lv_obj_t *obj30;
-    lv_obj_t *record_chart;
     lv_obj_t *obj31;
-    lv_obj_t *obj32;
-    lv_obj_t *obj33;
-    lv_obj_t *obj34;
-    lv_obj_t *obj35;
 } objects_t;
 
 extern objects_t objects;

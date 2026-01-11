@@ -50,6 +50,12 @@ extern const char *get_var_qmi_text();
 extern void set_var_qmi_text(const char *value);
 extern const char *get_var_aht20_text();
 extern void set_var_aht20_text(const char *value);
+extern const char *get_var_current_time_text();
+extern void set_var_current_time_text(const char *value);
+extern float get_var_pitch_var();
+extern void set_var_pitch_var(float value);
+extern float get_var_roll_var();
+extern void set_var_roll_var(float value);
 
 
 #ifdef __cplusplus

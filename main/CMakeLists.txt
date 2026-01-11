@@ -18,6 +18,7 @@ idf_component_register(SRCS "main.c"
                            "record/record.c"
                            "i2c_sensor/qmi.c"
                                  "i2c_sensor/aht20.c"
+                                 "i2c_sensor/draw_cube.c"
 
                             
                     INCLUDE_DIRS "."

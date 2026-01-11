@@ -202,3 +202,25 @@ void set_var_aht20_text(const char *value) {
     aht20_text[sizeof(aht20_text) / sizeof(char) - 1] = 0;
 }
 
+
+
+float pitch_var;
+
+float get_var_pitch_var() {
+    return pitch_var;
+}
+
+void set_var_pitch_var(float value) {
+    pitch_var = value;
+}
+
+
+float roll_var;
+
+float get_var_roll_var() {
+    return roll_var;
+}
+
+void set_var_roll_var(float value) {
+    roll_var = value;
+}

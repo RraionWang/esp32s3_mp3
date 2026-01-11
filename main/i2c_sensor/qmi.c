@@ -11,6 +11,12 @@
 #include "esp_err.h"
 #include "driver/i2c_master.h"
 #include "vars.h"
+#include "screens.h"
+#include "lvgl.h"
+#include "draw_cube.h"
+#include "vars.h"
+
+
 
 
 
@@ -77,6 +83,8 @@ static esp_err_t qmi_reg_write(uint8_t reg, uint8_t val)
         sizeof(buf),
         QMI8658_TIMEOUT_MS
     );
+
+  
 }
 
 /* =========================================================
@@ -234,17 +242,35 @@ static void qmi_task(void *arg)
                 s_qmi_str,
                 sizeof(s_qmi_str),
              
-                "ACC(raw): X:%d Y:%d Z:%d\n"
-                "GYR(raw): X:%d Y:%d Z:%d\n"
-                "Angle: Pitch:%.2f Roll :%.2f",
+                "ACC:X:%d Y:%d Z:%d\n"
+                "GYR:X:%d Y:%d Z:%d\n"
+                "Ang:Pitch:%.2f Roll :%.2f",
               
                 ax, ay, az,
                 gx, gy, gz,
                 pitch, roll
             );
 
+
+
             // ⚠️ 这里用 set_var（你之前写成 get_var_qmi_text 可能是手滑）
             set_var_qmi_text(s_qmi_str);
+
+
+
+            // 在这里更新pitch和rool
+            // draw_cube_set_angle(pitch, roll);
+
+
+            // 更新
+            set_var_pitch_var(pitch) ;
+            set_var_roll_var(roll) ; 
+
+            
+
+
+
+
 
             ESP_LOGI(TAG, "%s", s_qmi_str);
 
@@ -261,3 +287,6 @@ void qmi8658_start_task(void)
 {
     xTaskCreate(qmi_task, "qmi8658_task", 4096, NULL, 5, NULL);
 }
+
+
+

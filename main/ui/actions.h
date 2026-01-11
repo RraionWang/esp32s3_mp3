@@ -18,6 +18,8 @@ extern void action_start_timer(lv_event_t * e);
 extern void action_stop_timer(lv_event_t * e);
 extern void action_record_stop(lv_event_t * e);
 extern void action_record_start(lv_event_t * e);
+extern void action_gen_cube_widget(lv_event_t * e);
+extern void action_destroy_cube_widget(lv_event_t * e);
 
 
 #ifdef __cplusplus
