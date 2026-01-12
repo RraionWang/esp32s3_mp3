@@ -20,6 +20,7 @@ idf_component_register(SRCS "main.c"
                                  "i2c_sensor/aht20.c"
                                  "i2c_sensor/draw_cube.c"
                                    "wifi_time/wifi_time.c"
+                                   "bt/bt.c"
 
                             
                     INCLUDE_DIRS "."
@@ -33,7 +34,7 @@ idf_component_register(SRCS "main.c"
                                 "record"
                                 "i2c_sensor"
                                 "wifi_time"
+"bt"
 
-
-                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash
+                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash bt
                                  )

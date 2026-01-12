@@ -21,11 +21,12 @@
 #include "i2c_sensor/qmi.h"
 #include "draw_cube.h"
 #include "wifi_time.h"
+#include "bt/bt.h"
 
 static const char *TAG = "main";
 
-static const char *s_playlist[MAX_FILES + 1];
-static char s_playlist_paths[MAX_FILES][128];
+EXT_RAM_BSS_ATTR const char *s_playlist[MAX_FILES + 1];
+EXT_RAM_BSS_ATTR char s_playlist_paths[MAX_FILES][128];
 
 static int build_playlist_from_sd(void)
 {
@@ -142,6 +143,8 @@ void print_ram_info() {
 /* 主函数入口 */
 void app_main(void)
 {
+  
+
 
   //   //  初始化录音
   //  init_mic_debug();
@@ -231,6 +234,10 @@ void app_main(void)
 
     ui_time_timer_start(); // 开启定时器
 
+
+
+
+      // bt_init() ; // 初始化蓝牙
 
 
   // 打印内存信息

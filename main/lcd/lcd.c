@@ -122,7 +122,7 @@ esp_err_t app_lvgl_init(void)
         .hres = LCD_H_RES,
         .vres = LCD_V_RES,
         .rotation = {.swap_xy = false, .mirror_x = false, .mirror_y = true},
-        .flags = {.buff_dma = true, .swap_bytes = true}};
+        .flags = { .swap_bytes = true , .buff_spiram=true} };
     lvgl_disp = lvgl_port_add_disp(&disp_cfg);
 
     lv_disp_set_rotation(lvgl_disp, LV_DISPLAY_ROTATION_90);

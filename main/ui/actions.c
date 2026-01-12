@@ -19,6 +19,7 @@
 #include "aht20.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "bt/bt.h"
 
 extern TaskHandle_t aht20TaskHandle;
 extern TaskHandle_t qmiTubeTaskHandle;
@@ -340,3 +341,154 @@ void action_cali_time(lv_event_t *e)
         // wifi_time_sync_now(); // 目前使用信号会出现音乐无法播放的问题
 
 }
+
+
+
+// 生成菜单
+
+
+static lv_obj_t * root_page;
+
+/* ================= 创建一个最简单的文本条目 ================= */
+static lv_obj_t * menu_item(lv_obj_t * parent, const char * icon, const char * txt)
+{
+    lv_obj_t * cont = lv_menu_cont_create(parent);
+
+    if(icon) {
+        lv_obj_t * img = lv_image_create(cont);
+        lv_image_set_src(img, icon);
+    }
+
+    lv_obj_t * label = lv_label_create(cont);
+    lv_label_set_text(label, txt);
+    lv_obj_set_flex_grow(label, 1);
+
+    return cont;
+}
+
+
+
+static void menu_back_cb(lv_event_t * e)
+{
+    lv_obj_t * menu = lv_event_get_target(e);
+
+    /* 是否在 root page */
+   
+
+        /* 隐藏 menu */
+         lv_obj_add_flag(menu, LV_OBJ_FLAG_HIDDEN);
+
+     
+        lv_scr_load(objects.main);
+    
+}
+
+ static lv_obj_t * wifi_page;
+ static lv_obj_t * wifi_sec ;
+ static lv_obj_t * sys_page ; 
+  static lv_obj_t * bluetooth_page ; 
+
+
+
+
+static void scan_bt_cb(lv_event_t * e)
+{
+    if(lv_event_get_code(e) == LV_EVENT_CLICKED) {
+
+        if(bt_task_handle) {
+            xTaskNotify(bt_task_handle, 0, eNoAction);
+        }
+    }
+}
+
+
+
+static bool is_menu_gened =false ; 
+void action_gen_setting_meu(lv_event_t *e) {
+
+    lv_obj_remove_flag(objects.setting_menu , LV_OBJ_FLAG_HIDDEN);
+
+    if(!is_menu_gened){
+        is_menu_gened = true ;
+    
+    // TODO: Implement action gen_setting_meu here
+
+    /* 创建 menu */
+    lv_obj_t * menu = objects.setting_menu ; 
+
+    lv_obj_set_size(menu, LV_PCT(100), LV_PCT(100));
+
+    if(root_page==NULL){
+
+          
+
+    
+
+    lv_menu_set_mode_root_back_button(menu, LV_MENU_ROOT_BACK_BUTTON_ENABLED);
+    lv_obj_add_event_cb(menu, menu_back_cb, LV_EVENT_CLICKED, NULL);
+
+
+    /* ================= WiFi 页面 ================= */
+    wifi_page = lv_menu_page_create(menu, "WiFi ");
+    wifi_sec  = lv_menu_section_create(wifi_page);
+
+    lv_label_create(wifi_sec);
+    lv_label_set_text(lv_obj_get_child(wifi_sec, 0), "SSID: MyWifi\nIP: 192.168.1.10");
+
+
+        /* ================= 蓝牙信息页面 ================= */
+    bluetooth_page = lv_menu_page_create(menu, "info");
+    lv_obj_t * bluetooth_sec  = lv_menu_section_create(bluetooth_page);
+
+    lv_label_create(bluetooth_sec);
+    lv_label_set_text(lv_obj_get_child(bluetooth_sec, 0),
+                      "bluetooth");
+    
+    lv_obj_t* scan_bt = lv_button_create(bluetooth_sec) ;
+    lv_obj_t * label = lv_label_create(scan_bt);
+    lv_label_set_text(label, "Scan Bluetooth");
+    lv_obj_center(label);
+lv_obj_add_event_cb(scan_bt, scan_bt_cb, LV_EVENT_CLICKED, NULL);
+       
+
+
+
+    /* ================= 系统信息页面 ================= */
+     sys_page = lv_menu_page_create(menu, "info");
+    lv_obj_t * sys_sec  = lv_menu_section_create(sys_page);
+
+    lv_label_create(sys_sec);
+    lv_label_set_text(lv_obj_get_child(sys_sec, 0),
+                      "Device: ESP32-S3\nFW: v1.0\nBuild: 2026-01-13");
+
+
+           
+
+    /* ================= 侧边栏 Root 页面 ================= */
+    root_page = lv_menu_page_create(menu, "Setting");
+    lv_obj_t * root_sec = lv_menu_section_create(root_page);
+
+    lv_obj_t * item;
+
+    item = menu_item(root_sec, LV_SYMBOL_WIFI, "WiFi");
+    lv_menu_set_load_page_event(menu, item, wifi_page);
+
+    item = menu_item(root_sec, LV_SYMBOL_BLUETOOTH, "bluetooth");
+    lv_menu_set_load_page_event(menu, item, bluetooth_page);
+
+
+    item = menu_item(root_sec, LV_SYMBOL_SETTINGS, "info");
+    lv_menu_set_load_page_event(menu, item, sys_page);
+
+
+
+    /* 设置侧边栏 */
+    lv_menu_set_sidebar_page(menu, root_page);
+
+    /* 默认选中第一个 */
+    lv_obj_send_event(item, LV_EVENT_CLICKED, NULL);
+    
+    }
+}
+}
+
