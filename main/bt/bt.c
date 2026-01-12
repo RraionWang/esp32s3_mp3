@@ -125,11 +125,12 @@ void bt_init(void)
 
 TaskHandle_t bt_task_handle = NULL;
 
-static void bt_task(void *arg)
+ void bt_task(void *arg)
 {
     uint32_t notify_value;
 
     for (;;) {
+
         /* 等待按钮通知 */
         xTaskNotifyWait(
             0,              // 不清除进入标志
@@ -139,6 +140,9 @@ static void bt_task(void *arg)
         );
 
         ESP_LOGI("BT", "Scan button pressed, start scan");
+
+
+     
 
         bt_start_scan();   // 👉 你之前写的 NimBLE 扫描函数
     }

@@ -4,6 +4,7 @@
 #include "vars.h"
 #include "lvgl.h"
 #include "esp_lvgl_port.h"
+#include "esp_log.h"
 
 /* ================= 尺寸 ================= */
 #define CUBE_W 130
@@ -174,15 +175,49 @@ static void draw_cube_angle_task(void *arg)
 }
 
 
+
+
+static StaticTask_t *pxTaskBuffer = NULL;
+static StackType_t  *puxStackBuffer = NULL;
+static TaskHandle_t drawCubeTaskHandle = NULL;
+#define DRAWCUBE_STACK_SIZE 4096
+
+
+
 void draw_cube_start_angle_task(void)
 {
-    xTaskCreate(
-        draw_cube_angle_task,
-        "cube_angle_task",
-        4096,
-        NULL,
-        4,      // UI 类任务，优先级不需要太高
-        NULL
+    // xTaskCreate(
+    //     draw_cube_angle_task,
+    //     "cube_angle_task",
+    //     4096,
+    //     NULL,
+    //     4,      // UI 类任务，优先级不需要太高
+    //     NULL
+    // );
+
+
+// 在psram创建任务
+
+    pxTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // 3. 在 PSRAM 为 Stack 申请内存（Stack 很大，放外部省空间）
+    puxStackBuffer = (StackType_t *)heap_caps_malloc(DRAWCUBE_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
+        ESP_LOGE("TASK", "内存不足，无法创建任务！");
+        return;
+    }
+        drawCubeTaskHandle = xTaskCreateStatic(
+        draw_cube_angle_task,   // 任务函数
+        "cube_static_task",     // 任务名
+        DRAWCUBE_STACK_SIZE,        // 栈深度（字节）
+        NULL,                   // 参数
+        4,                      // 优先级
+        puxStackBuffer,         // 栈指向 PSRAM
+        pxTaskBuffer            // TCB 指向内部 RAM
     );
+
+
+
 }
 

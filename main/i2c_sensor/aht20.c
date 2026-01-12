@@ -162,9 +162,9 @@ static void aht20_task(void *arg)
  * ========================================================= */
 
 
-StaticTask_t *pxTaskBuffer = NULL;
-StackType_t  *puxStackBuffer = NULL;
-TaskHandle_t aht20TaskHandle = NULL;
+static StaticTask_t *pxTaskBuffer = NULL;
+static StackType_t  *puxStackBuffer = NULL;
+static TaskHandle_t aht20TaskHandle = NULL;
 
 #define AHT20_STACK_SIZE 4096
 
@@ -177,7 +177,7 @@ void aht20_start_task(void)
     puxStackBuffer = (StackType_t *)heap_caps_malloc(AHT20_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
     if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
-        ESP_LOGE("TASK", "内存不足，无法创建静态任务！");
+        ESP_LOGE("TASK", "内存不足，无法创建任务！");
         return;
     }
         aht20TaskHandle = xTaskCreateStatic(

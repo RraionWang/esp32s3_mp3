@@ -393,6 +393,7 @@ static void menu_back_cb(lv_event_t * e)
 
 static void scan_bt_cb(lv_event_t * e)
 {
+    ESP_LOGI("BTN","按下按键了"); 
     if(lv_event_get_code(e) == LV_EVENT_CLICKED) {
 
         if(bt_task_handle) {

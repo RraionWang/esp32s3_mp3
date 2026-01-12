@@ -54,6 +54,62 @@ static void mytimer_task(void *arg)
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+// 在外部创建任务
+static StaticTask_t *pxTaskBuffer = NULL;
+static StackType_t  *puxStackBuffer = NULL;
+TaskHandle_t myTimerTaskHandle = NULL;
+#define MYTIMER_STACK_SIZE 4096
+
+
+
+void mytimer_start_task(void)
+{
+   
+
+
+// 在psram创建任务
+
+    pxTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // 3. 在 PSRAM 为 Stack 申请内存（Stack 很大，放外部省空间）
+    puxStackBuffer = (StackType_t *)heap_caps_malloc(MYTIMER_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
+        ESP_LOGE("TASK", "内存不足，无法创建任务！");
+        return;
+    }
+        myTimerTaskHandle = xTaskCreateStatic(
+        mytimer_task,   // 任务函数
+        "my_timer_static_task",     // 任务名
+        MYTIMER_STACK_SIZE,        // 栈深度（字节）
+        NULL,                   // 参数
+        4,                      // 优先级
+        puxStackBuffer,         // 栈指向 PSRAM
+        pxTaskBuffer            // TCB 指向内部 RAM
+    );
+
+
+
+}
+
+
+
+
+
+
+
 /* ================== 对外接口 ================== */
 
 bool mytimer_start(uint64_t period_us, mytimer_cb_t cb)
@@ -72,15 +128,20 @@ bool mytimer_start(uint64_t period_us, mytimer_cb_t cb)
         return false;
     }
 
-    /* 创建处理任务 */
-    xTaskCreate(
-        mytimer_task,
-        "mytimer_task",
-        4096,
-        NULL,
-        10,
-        &s_task_handle
-    );
+    // /* 创建处理任务 */
+    // xTaskCreate(
+    //     mytimer_task,
+    //     "mytimer_task",
+    //     4096,
+    //     NULL,
+    //     10,
+    //     &s_task_handle
+    // );
+
+
+// 使用psram中的静态任务来代替
+    mytimer_start_task() ;
+
 
     /* 创建 GPTimer */
     gptimer_config_t cfg = {

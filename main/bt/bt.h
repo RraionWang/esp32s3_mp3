@@ -11,6 +11,7 @@ extern "C" {
 /* ===== 对外接口 ===== */
 void bt_init(void);
 void bt_start_scan(void);
+void bt_task(); 
 
 /* ===== 给 LVGL 用的 ===== */
 extern TaskHandle_t bt_task_handle;

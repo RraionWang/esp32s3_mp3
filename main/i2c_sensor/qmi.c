@@ -285,9 +285,51 @@ static void qmi_task(void *arg)
 
 
 
+// void qmi8658_start_task(void)
+// {
+//     // xTaskCreate(qmi_task, "qmi8658_task", 2048, NULL, 5, NULL);
+// }
+
+
+
+
+
+// 在外部创建任务
+static StaticTask_t *pxTaskBuffer = NULL;
+static StackType_t  *puxStackBuffer = NULL;
+TaskHandle_t qmiTaskHandle = NULL;
+#define QMI_STACK_SIZE 4096
+
+
+
 void qmi8658_start_task(void)
 {
-    xTaskCreate(qmi_task, "qmi8658_task", 2048, NULL, 5, NULL);
+   
+
+
+// 在psram创建任务
+
+    pxTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // 3. 在 PSRAM 为 Stack 申请内存（Stack 很大，放外部省空间）
+    puxStackBuffer = (StackType_t *)heap_caps_malloc(QMI_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
+        ESP_LOGE("TASK", "内存不足，无法创建任务！");
+        return;
+    }
+        qmiTaskHandle = xTaskCreateStatic(
+        qmi_task,   // 任务函数
+        "cube_static_task",     // 任务名
+        QMI_STACK_SIZE,        // 栈深度（字节）
+        NULL,                   // 参数
+        4,                      // 优先级
+        puxStackBuffer,         // 栈指向 PSRAM
+        pxTaskBuffer            // TCB 指向内部 RAM
+    );
+
+
+
 }
 
 

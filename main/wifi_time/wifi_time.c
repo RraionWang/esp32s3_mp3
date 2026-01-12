@@ -326,10 +326,14 @@ static void wifi_time_task(void *pvParameters) {
 }
 
 
-// TaskHandle_t witiTimeTaskHandle = NULL;
-// static StaticTask_t *xTaskBuffer = NULL;
-// static StackType_t *xStackBuffer = NULL;
-// #define TASK_STACK_SIZE 8192
+//  TaskHandle_t witiTimeTaskHandle = NULL;
+//  static StaticTask_t *xTaskBuffer = NULL;
+//  static StackType_t *xStackBuffer = NULL;
+//  #define TASK_STACK_SIZE 8192*2
+
+
+
+
 
 // 设置为比较不重要的
 void wifi_time_task_init(void)
@@ -353,19 +357,19 @@ void wifi_time_task_init(void)
     //     xStackBuffer,
     //     xTaskBuffer,
 
-    //     1 // Core 0（WiFi 必须）
+    //     0 // Core 0（WiFi 必须）
     // );
 
 
-    // 放到内部ram里面就可以增大成功概率
+    // 放到内部ram里面就可以增大成功概率，放到psram里面就有问题
     xTaskCreatePinnedToCore(
         wifi_time_task,
         "wifi_time_task",
-        8192, // WiFi 必须大栈
+        8192*2, // WiFi 必须大栈
         NULL,
         4,
         NULL,
-      
-        1 // Core 0（WiFi 必须）
+        0 // Core 0（WiFi 必须）
     );
+
 }

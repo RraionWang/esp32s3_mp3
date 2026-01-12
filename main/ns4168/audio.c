@@ -711,6 +711,53 @@ if (now - last_print_ms >= 500) {
 
 /* ===== 公共 API ===== */
 
+
+
+
+
+// 在外部创建任务
+static StaticTask_t *pxTaskBuffer = NULL;
+static StackType_t  *puxStackBuffer = NULL;
+TaskHandle_t wavTaskHandle = NULL;
+#define WAV_STACK_SIZE 8192
+
+
+
+void wav_start_task(void)
+{
+   
+
+
+// 在psram创建任务
+
+    pxTaskBuffer = (StaticTask_t *)heap_caps_malloc(sizeof(StaticTask_t), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+
+    // 3. 在 PSRAM 为 Stack 申请内存（Stack 很大，放外部省空间）
+    puxStackBuffer = (StackType_t *)heap_caps_malloc(WAV_STACK_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    if (pxTaskBuffer == NULL || puxStackBuffer == NULL) {
+        ESP_LOGE("TASK", "内存不足，无法创建任务！");
+        return;
+    }
+        wavTaskHandle = xTaskCreateStatic(
+        wav_play_task,   // 任务函数
+        "cube_static_task",     // 任务名
+        WAV_STACK_SIZE,        // 栈深度（字节）
+        NULL,                   // 参数
+        4,                      // 优先级
+        puxStackBuffer,         // 栈指向 PSRAM
+        pxTaskBuffer            // TCB 指向内部 RAM
+    );
+
+
+
+}
+
+
+
+
+
+
 esp_err_t wav_player_init(const char *playlist[], float volume)
 {
 
@@ -758,7 +805,10 @@ s_lrc_lines = heap_caps_malloc(sizeof(lrc_line_t) * MAX_LRC_LINES, MALLOC_CAP_SP
     ESP_ERROR_CHECK(i2s_init());
 
     // 启动播放任务
-    xTaskCreatePinnedToCore(wav_play_task, "wav_player", 8192, NULL, 7, NULL,0);
+    // xTaskCreatePinnedToCore(wav_play_task, "wav_player", 8192, NULL, 7, NULL,0);
+
+    // 移动任务到psram
+    wav_start_task() ;
 
     ESP_LOGI(TAG, "WAV player initialized with %d tracks", len);
     return ESP_OK;
