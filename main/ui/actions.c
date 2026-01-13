@@ -497,8 +497,48 @@ lv_obj_add_event_cb(scan_bt, scan_bt_cb, LV_EVENT_CLICKED, NULL);
 
 
 
-// 扫描wifi
+// 重新设置wifi
 
-void action_scan_wifi(lv_event_t *e) {
-    
+
+void action_reset_wifi(lv_event_t *e) {
+    // TODO: Implement action reset_wifi here
+
+    set_var_ssid_txt("重新配网中...");
+    set_var_password_txt("重新配网中");
+
+   
+    // 使用通知
+
+        if (wifi_ctrl_task) {
+        xTaskNotifyGive(wifi_ctrl_task);
+    }
+
+}
+
+
+
+
+char ssid_txt[100] = { 0 };
+
+const char *get_var_ssid_txt() {
+    return ssid_txt;
+}
+
+void set_var_ssid_txt(const char *value) {
+    strncpy(ssid_txt, value, sizeof(ssid_txt) / sizeof(char));
+    ssid_txt[sizeof(ssid_txt) / sizeof(char) - 1] = 0;
+}
+
+
+
+
+char password_txt[100] = { 0 };
+
+const char *get_var_password_txt() {
+    return password_txt;
+}
+
+void set_var_password_txt(const char *value) {
+    strncpy(password_txt, value, sizeof(password_txt) / sizeof(char));
+    password_txt[sizeof(password_txt) / sizeof(char) - 1] = 0;
 }

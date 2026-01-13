@@ -75,11 +75,13 @@ typedef struct _objects_t {
     lv_obj_t *obj41;
     lv_obj_t *obj42;
     lv_obj_t *obj43;
-    lv_obj_t *ram_bar;
-    lv_obj_t *psram_bar;
     lv_obj_t *obj44;
     lv_obj_t *obj45;
+    lv_obj_t *ram_bar;
+    lv_obj_t *psram_bar;
     lv_obj_t *obj46;
+    lv_obj_t *obj47;
+    lv_obj_t *obj48;
     lv_obj_t *setting_menu;
 } objects_t;
 

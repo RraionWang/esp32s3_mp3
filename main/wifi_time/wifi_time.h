@@ -55,11 +55,11 @@ void wifi_scan_independent() ;
 esp_err_t wifi_prov_run(const char *ap_ssid, const char *ap_pass) ;
 
 
-
+extern   TaskHandle_t wifi_ctrl_task ; 
 extern  SemaphoreHandle_t s_time_sync_sem ; 
-void wifi_request_reprovision(void);
 
-
+void wifi_reprovision(void); // 重新配网函数
+ void wifi_reprovision_task_init(void) ; // 重新配网初始化任务
 
 
 #ifdef __cplusplus

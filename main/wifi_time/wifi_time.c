@@ -46,6 +46,8 @@
 static const char *TAG = "wifi_time";
 
 
+#define WIFI_PROV_NAMESPACE "wifi_prov"
+#define WIFI_PROV_KEY       "done"
 
  
 
@@ -78,6 +80,12 @@ extern void set_var_time_txt(const char *value);
 /* =========================================================
  * UI Time Queue（保持你原来的逻辑）
  * ========================================================= */
+
+
+
+
+
+
 static QueueHandle_t s_ui_time_queue = NULL;
 
 void ui_time_queue_init(void)
@@ -226,6 +234,101 @@ void wifi_time_sys_init(void)
         IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL));
 }
 
+
+
+/* =========================================================
+ * 检查是否配过网了
+ * ========================================================= */
+ static void wifi_mark_provisioned(void)
+{
+    nvs_handle_t nvs;
+    nvs_open(WIFI_PROV_NAMESPACE, NVS_READWRITE, &nvs);
+    nvs_set_u8(nvs, WIFI_PROV_KEY, 1);
+    nvs_commit(nvs);
+    nvs_close(nvs);
+}
+
+static bool wifi_is_provisioned(void)
+{
+    nvs_handle_t nvs;
+    uint8_t done = 0;
+
+    if (nvs_open(WIFI_PROV_NAMESPACE, NVS_READONLY, &nvs) != ESP_OK)
+        return false;
+
+    nvs_get_u8(nvs, WIFI_PROV_KEY, &done);
+    nvs_close(nvs);
+
+    return done == 1;
+}
+
+
+/* =========================================================
+ * 重新配网函数
+ * ========================================================= */
+
+
+
+  TaskHandle_t wifi_ctrl_task = NULL;
+
+
+
+
+
+
+static void wifi_reprovision_task(void *arg)
+{
+    while (1) {
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+        ESP_LOGI("WIFI", "执行重新配网（后台任务）");
+        wifi_reprovision();
+    }
+}
+
+
+
+void wifi_reprovision(void)
+{
+    ESP_LOGI("WIFI", "清空 WiFi 配置，重新配网");
+
+    esp_wifi_stop();
+    esp_wifi_restore();   // ⭐ 清空 WiFi NVS（SSID / 密码）
+
+    // 清除配网完成标志
+    nvs_handle_t nvs;
+    nvs_open(WIFI_PROV_NAMESPACE, NVS_READWRITE, &nvs);
+    nvs_erase_key(nvs, WIFI_PROV_KEY);
+    nvs_commit(nvs);
+    nvs_close(nvs);
+
+    // wifi_start_provision();
+
+
+    wifi_prov_run("ESP32S3", "123456789");
+    vTaskDelete(NULL);   // 配完就销毁
+
+
+}
+
+
+ void wifi_reprovision_task_init(void)
+{
+    xTaskCreate(
+        wifi_reprovision_task,
+        "wifi_ctrl",
+        4096,
+        NULL,
+        5,
+        &wifi_ctrl_task
+    );
+}
+
+
+
+
+
+
 /* =========================================================
  * Web 配网：HTTP Handlers
  * ========================================================= */
@@ -255,6 +358,8 @@ static esp_err_t http_save_post(httpd_req_t *req)
 
     ESP_LOGI(TAG, "WEB_PROV: SSID: %s", s_prov_ssid);
     ESP_LOGI(TAG, "WEB_PROV: PASS: %s", s_prov_pass);
+
+
 
     /* 保存到 NVS（后续 SNTP / 自动连接都用它） */
     wifi_time_set_ap(s_prov_ssid, s_prov_pass);
@@ -412,6 +517,10 @@ static esp_err_t prov_switch_to_sta_and_connect(void)
         ESP_LOGE(TAG, "WEB_PROV: No WiFi config in NVS");
         return ESP_FAIL;
     }
+
+    set_var_ssid_txt(s_prov_ssid); 
+    set_var_password_txt(s_prov_pass);
+
 
     wifi_config_t sta_cfg = {0};
     strncpy((char *)sta_cfg.sta.ssid, ssid, sizeof(sta_cfg.sta.ssid) - 1);

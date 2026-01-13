@@ -64,6 +64,10 @@ extern int32_t get_var_current_sram_used();
 extern void set_var_current_sram_used(int32_t value);
 extern int32_t get_var_current_psram_used();
 extern void set_var_current_psram_used(int32_t value);
+extern const char *get_var_ssid_txt();
+extern void set_var_ssid_txt(const char *value);
+extern const char *get_var_password_txt();
+extern void set_var_password_txt(const char *value);
 
 
 #ifdef __cplusplus

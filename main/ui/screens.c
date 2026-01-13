@@ -337,7 +337,7 @@ static void event_handler_cb_time_page_obj21(lv_event_t *e) {
     
     if (event == LV_EVENT_CLICKED) {
         e->user_data = (void *)0;
-        action_scan_wifi(e);
+        action_reset_wifi(e);
     }
 }
 
@@ -1289,7 +1289,7 @@ void create_screen_time_page() {
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             objects.obj20 = obj;
-            lv_obj_set_pos(obj, 272, 11);
+            lv_obj_set_pos(obj, 270, 11);
             lv_obj_set_size(obj, 40, 40);
             lv_obj_add_event_cb(obj, event_handler_cb_time_page_obj20, LV_EVENT_ALL, flowState);
             lv_obj_set_style_bg_color(obj, lv_color_hex(0xffca4a46), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1308,7 +1308,7 @@ void create_screen_time_page() {
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj42 = obj;
-            lv_obj_set_pos(obj, 16, 129);
+            lv_obj_set_pos(obj, 9, 79);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_font(obj, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "");
@@ -1317,8 +1317,8 @@ void create_screen_time_page() {
             // cali_btn
             lv_obj_t *obj = lv_button_create(parent_obj);
             objects.cali_btn = obj;
-            lv_obj_set_pos(obj, 16, 11);
-            lv_obj_set_size(obj, 100, 50);
+            lv_obj_set_pos(obj, 9, 123);
+            lv_obj_set_size(obj, 100, 40);
             lv_obj_add_event_cb(obj, event_handler_cb_time_page_cali_btn, LV_EVENT_ALL, flowState);
             {
                 lv_obj_t *parent_obj = obj;
@@ -1327,22 +1327,23 @@ void create_screen_time_page() {
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text(obj, "cali");
+                    lv_obj_set_style_text_font(obj, &ui_font_cn_font_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_label_set_text(obj, "校准时间");
                 }
             }
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj43 = obj;
-            lv_obj_set_pos(obj, 16, 86);
+            lv_obj_set_pos(obj, 7, 51);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_label_set_text(obj, "");
         }
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             objects.obj21 = obj;
-            lv_obj_set_pos(obj, 189, 63);
-            lv_obj_set_size(obj, 100, 50);
+            lv_obj_set_pos(obj, 160, 123);
+            lv_obj_set_size(obj, 100, 40);
             lv_obj_add_event_cb(obj, event_handler_cb_time_page_obj21, LV_EVENT_ALL, flowState);
             {
                 lv_obj_t *parent_obj = obj;
@@ -1351,9 +1352,40 @@ void create_screen_time_page() {
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text(obj, "scan");
+                    lv_obj_set_style_text_font(obj, &ui_font_cn_font_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_label_set_text(obj, "重新配网");
                 }
             }
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            lv_obj_set_pos(obj, 9, 31);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_cn_font, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "账号");
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            lv_obj_set_pos(obj, 129, 31);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_cn_font, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "密码");
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.obj44 = obj;
+            lv_obj_set_pos(obj, 37, 31);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_cn_font, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "");
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.obj45 = obj;
+            lv_obj_set_pos(obj, 157, 31);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_cn_font, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "");
         }
     }
     
@@ -1390,6 +1422,24 @@ void tick_screen_time_page() {
             tick_value_change_obj = NULL;
         }
     }
+    {
+        const char *new_val = evalTextProperty(flowState, 11, 3, "Failed to evaluate Text in Label widget");
+        const char *cur_val = lv_label_get_text(objects.obj44);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = objects.obj44;
+            lv_label_set_text(objects.obj44, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        const char *new_val = evalTextProperty(flowState, 12, 3, "Failed to evaluate Text in Label widget");
+        const char *cur_val = lv_label_get_text(objects.obj45);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = objects.obj45;
+            lv_label_set_text(objects.obj45, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
 }
 
 void create_screen_ram_page() {
@@ -1412,7 +1462,7 @@ void create_screen_ram_page() {
                 lv_obj_t *parent_obj = obj;
                 {
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    objects.obj44 = obj;
+                    objects.obj46 = obj;
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1460,7 +1510,7 @@ void create_screen_ram_page() {
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.obj45 = obj;
+            objects.obj47 = obj;
             lv_obj_set_pos(obj, 27, 81);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1468,7 +1518,7 @@ void create_screen_ram_page() {
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.obj46 = obj;
+            objects.obj48 = obj;
             lv_obj_set_pos(obj, 27, 134);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_label_set_text(obj, "");
@@ -1483,10 +1533,10 @@ void tick_screen_ram_page() {
     (void)flowState;
     {
         const char *new_val = evalTextProperty(flowState, 2, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj44);
+        const char *cur_val = lv_label_get_text(objects.obj46);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj44;
-            lv_label_set_text(objects.obj44, new_val);
+            tick_value_change_obj = objects.obj46;
+            lv_label_set_text(objects.obj46, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1510,19 +1560,19 @@ void tick_screen_ram_page() {
     }
     {
         const char *new_val = evalTextProperty(flowState, 8, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj45);
+        const char *cur_val = lv_label_get_text(objects.obj47);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj45;
-            lv_label_set_text(objects.obj45, new_val);
+            tick_value_change_obj = objects.obj47;
+            lv_label_set_text(objects.obj47, new_val);
             tick_value_change_obj = NULL;
         }
     }
     {
         const char *new_val = evalTextProperty(flowState, 9, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj46);
+        const char *cur_val = lv_label_get_text(objects.obj48);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj46;
-            lv_label_set_text(objects.obj46, new_val);
+            tick_value_change_obj = objects.obj48;
+            lv_label_set_text(objects.obj48, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1556,7 +1606,7 @@ void tick_screen_setting_page() {
 
 
 static const char *screen_names[] = { "Main", "music_page", "timer_page", "timer_running_page", "record_page", "sensor_page", "bat_page", "time_page", "ram_page", "setting_page" };
-static const char *object_names[] = { "main", "music_page", "timer_page", "timer_running_page", "record_page", "sensor_page", "bat_page", "time_page", "ram_page", "setting_page", "obj0", "obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj7", "obj8", "obj9", "obj10", "obj11", "obj12", "vol_bar", "obj13", "obj14", "obj15", "obj16", "obj17", "obj18", "obj19", "obj20", "cali_btn", "obj21", "obj22", "music_process_bar", "lab_lrc", "vol_value_lab", "music_list", "obj23", "obj24", "obj25", "obj26", "obj27", "obj28", "obj29", "obj30", "roller_min", "roller_sec", "roller_min_1", "obj31", "obj32", "timer_indicator", "obj33", "obj34", "record_chart", "obj35", "obj36", "cord_obj", "obj37", "obj38", "obj39", "bat_chart", "obj40", "obj41", "obj42", "obj43", "ram_bar", "psram_bar", "obj44", "obj45", "obj46", "setting_menu" };
+static const char *object_names[] = { "main", "music_page", "timer_page", "timer_running_page", "record_page", "sensor_page", "bat_page", "time_page", "ram_page", "setting_page", "obj0", "obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj7", "obj8", "obj9", "obj10", "obj11", "obj12", "vol_bar", "obj13", "obj14", "obj15", "obj16", "obj17", "obj18", "obj19", "obj20", "cali_btn", "obj21", "obj22", "music_process_bar", "lab_lrc", "vol_value_lab", "music_list", "obj23", "obj24", "obj25", "obj26", "obj27", "obj28", "obj29", "obj30", "roller_min", "roller_sec", "roller_min_1", "obj31", "obj32", "timer_indicator", "obj33", "obj34", "record_chart", "obj35", "obj36", "cord_obj", "obj37", "obj38", "obj39", "bat_chart", "obj40", "obj41", "obj42", "obj43", "obj44", "obj45", "ram_bar", "psram_bar", "obj46", "obj47", "obj48", "setting_menu" };
 
 
 typedef void (*tick_screen_func_t)();
