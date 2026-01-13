@@ -121,12 +121,18 @@ static void wifi_event_handler(void *arg,
     if (base == WIFI_EVENT) {
         if (id == WIFI_EVENT_STA_START) {
             ESP_LOGI(TAG, "WIFI_EVENT_STA_START");
+
+           
+
+   
+
             if (s_sta_autoconnect) {
                 ESP_LOGI(TAG, "Auto connect enabled -> esp_wifi_connect()");
                 esp_wifi_connect();
             }
         } else if (id == WIFI_EVENT_STA_DISCONNECTED) {
             ESP_LOGW(TAG, "WIFI_EVENT_STA_DISCONNECTED");
+          
             xEventGroupClearBits(s_wifi_ev, WIFI_GOT_IP_BIT);
             if (s_sta_autoconnect) {
                 ESP_LOGI(TAG, "Retry connect...");
@@ -136,9 +142,18 @@ static void wifi_event_handler(void *arg,
     }
 
     if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
+        
+
         ip_event_got_ip_t *e = (ip_event_got_ip_t *)data;
         ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&e->ip_info.ip));
         xEventGroupSetBits(s_wifi_ev, WIFI_GOT_IP_BIT);
+
+           // ⭐ 关键：连上就断
+    ESP_LOGI(TAG, "WiFi connected, stop WiFi immediately");
+    s_sta_autoconnect = false;   // 禁止重连
+    esp_wifi_stop();             // 主动断开
+
+    
     }
 }
 
@@ -691,6 +706,7 @@ void wifi_time_sync_now(void)
     }
 
     /* 关闭 WiFi（省电 & 给其他任务让 RAM） */
+    s_sta_autoconnect = false;   // ⭐ 一定要先关
     esp_netif_sntp_deinit();
     esp_wifi_stop();
     s_sta_autoconnect = false;

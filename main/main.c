@@ -166,7 +166,7 @@ void app_main(void)
 
 
 
-  // wifi_prov_run("ESP32-SETUP", "12345678");  // <- 你想改密码就改这里
+
 
    xTaskCreate(
         wifi_prov_task,

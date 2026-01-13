@@ -274,3 +274,17 @@ void set_var_current_psram_used(int32_t value) {
 
 
 
+
+
+
+char wifi_logo[100] = { 0 };
+
+const char *get_var_wifi_logo() {
+    return wifi_logo;
+}
+
+void set_var_wifi_logo(const char *value) {
+    strncpy(wifi_logo, value, sizeof(wifi_logo) / sizeof(char));
+    wifi_logo[sizeof(wifi_logo) / sizeof(char) - 1] = 0;
+}
+

@@ -68,6 +68,8 @@ extern const char *get_var_ssid_txt();
 extern void set_var_ssid_txt(const char *value);
 extern const char *get_var_password_txt();
 extern void set_var_password_txt(const char *value);
+extern const char *get_var_wifi_logo();
+extern void set_var_wifi_logo(const char *value);
 
 
 #ifdef __cplusplus

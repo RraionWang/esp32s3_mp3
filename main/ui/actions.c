@@ -542,3 +542,6 @@ void set_var_password_txt(const char *value) {
     strncpy(password_txt, value, sizeof(password_txt) / sizeof(char));
     password_txt[sizeof(password_txt) / sizeof(char) - 1] = 0;
 }
+
+
+
