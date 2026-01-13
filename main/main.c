@@ -162,6 +162,8 @@ void app_main(void)
   wifi_time_sys_init();
   ui_time_queue_init(); // 创建时间队列
 
+  wifi_reprovision_task_init() ; // 启动重复配网检测程序
+
 
 
   // wifi_prov_run("ESP32-SETUP", "12345678");  // <- 你想改密码就改这里
@@ -174,9 +176,7 @@ void app_main(void)
         4,
         NULL
     );
-
-    wifi_reprovision_task_init() ; // 开启重新配网函数
-
+    
 
 
   wifi_time_task_init(); // 持续执行更新函数
