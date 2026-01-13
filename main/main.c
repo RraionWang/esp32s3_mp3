@@ -153,7 +153,12 @@ void app_main(void)
   wifi_time_sys_init();
   ui_time_queue_init(); // 创建时间队列
 
-  wifi_time_set_ap("RX-Bridge", "RX3.14159");
+  // wifi_time_set_ap("RX-Bridge", "RX3.14159");
+
+
+    wifi_prov_run("ESP32-SETUP", "12345678");  // <- 你想改密码就改这里
+
+    
   wifi_time_task_init(); // 持续执行更新函数
 
   sdcard_init();

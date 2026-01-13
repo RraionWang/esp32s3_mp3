@@ -69,7 +69,7 @@ static void mytimer_task(void *arg)
 // 在外部创建任务
 static StaticTask_t *pxTaskBuffer = NULL;
 static StackType_t  *puxStackBuffer = NULL;
-TaskHandle_t myTimerTaskHandle = NULL;
+
 #define MYTIMER_STACK_SIZE 4096
 
 
@@ -90,7 +90,7 @@ void mytimer_start_task(void)
         ESP_LOGE("TASK", "内存不足，无法创建任务！");
         return;
     }
-        myTimerTaskHandle = xTaskCreateStatic(
+        s_task_handle = xTaskCreateStatic(
         mytimer_task,   // 任务函数
         "my_timer_static_task",     // 任务名
         MYTIMER_STACK_SIZE,        // 栈深度（字节）

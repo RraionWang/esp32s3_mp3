@@ -22,6 +22,7 @@ extern void action_gen_cube_widget(lv_event_t * e);
 extern void action_destroy_cube_widget(lv_event_t * e);
 extern void action_cali_time(lv_event_t * e);
 extern void action_gen_setting_meu(lv_event_t * e);
+extern void action_scan_wifi(lv_event_t * e);
 
 
 #ifdef __cplusplus

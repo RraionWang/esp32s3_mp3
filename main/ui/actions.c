@@ -493,3 +493,12 @@ lv_obj_add_event_cb(scan_bt, scan_bt_cb, LV_EVENT_CLICKED, NULL);
 }
 }
 
+
+
+
+
+// 扫描wifi
+
+void action_scan_wifi(lv_event_t *e) {
+    
+}

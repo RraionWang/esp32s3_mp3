@@ -7,6 +7,11 @@ extern "C" {
 #include "stdbool.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "esp_err.h"
+
+
+
+
 // 校准状态
 typedef enum {
     UI_TIME_UPDATE,     // 更新时间字符串
@@ -44,7 +49,18 @@ void ui_time_timer_start(void);
 
 void ui_time_queue_init() ; 
 
+
+void wifi_scan_independent() ; 
+
+esp_err_t wifi_prov_run(const char *ap_ssid, const char *ap_pass) ;
+
+
+
 extern  SemaphoreHandle_t s_time_sync_sem ; 
+void wifi_request_reprovision(void);
+
+
+
 
 #ifdef __cplusplus
 }

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32 WiFi 配网</title>
+
+<style>
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    background: #f2f3f5;
+    padding: 20px;
+}
+
+.card {
+    max-width: 420px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    box-sizing: border-box;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+label {
+    margin-top: 14px;
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: 1px solid #d0d0d0;
+    font-size: 15px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* ===== 统一聚焦态 ===== */
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #1677ff;
+    box-shadow: 0 0 0 2px rgba(22,119,255,0.15);
+}
+
+/* ===== Select 下拉框主题化 ===== */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding-right: 42px;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #666 50%),
+        linear-gradient(135deg, #666 50%, transparent 50%),
+        linear-gradient(to right, #e5e5e5, #e5e5e5);
+
+    background-position:
+        calc(100% - 20px) calc(50% - 3px),
+        calc(100% - 15px) calc(50% - 3px),
+        calc(100% - 40px) 50%;
+
+    background-size:
+        6px 6px,
+        6px 6px,
+        1px 24px;
+
+    background-repeat: no-repeat;
+}
+
+/* 下拉选项颜色，防止黑底 */
+option {
+    color: #333;
+    background-color: #ffffff;
+}
+
+/* ===== 按钮样式 ===== */
+button {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #1677ff, #4096ff);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button.secondary {
+    margin-top: 10px;
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button.secondary:hover {
+    background: #ebebeb;
+}
+
+/* ===== 状态提示 ===== */
+.status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+    <h2>ESP32 WiFi 配网</h2>
+
+    <label>选择 WiFi</label>
+    <select id="wifiList" onchange="selectSSID()">
+        <option>正在扫描...</option>
+    </select>
+
+    <button class="secondary" onclick="scanWifi()">🔄 重新扫描</button>
+
+    <label>SSID</label>
+    <input id="ssid" placeholder="自动填入或手动输入">
+
+    <label>密码</label>
+    <input id="password" type="password" placeholder="WiFi 密码">
+
+    <button onclick="submit()">连接 WiFi</button>
+
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+function setStatus(msg) {
+    document.getElementById('status').innerText = msg;
+}
+
+function scanWifi() {
+    setStatus("正在扫描附近 WiFi...");
+    fetch('/scan')
+        .then(r => r.json())
+        .then(list => {
+            const sel = document.getElementById('wifiList');
+            sel.innerHTML = '';
+            if (list.length === 0) {
+                const opt = document.createElement('option');
+                opt.text = '未发现 WiFi';
+                sel.appendChild(opt);
+                setStatus("未扫描到 WiFi");
+                return;
+            }
+            list.forEach(ap => {
+                const opt = document.createElement('option');
+                opt.value = ap.ssid;
+                opt.text = ap.ssid + ' (' + ap.rssi + ' dBm)';
+                sel.appendChild(opt);
+            });
+            document.getElementById('ssid').value = list[0].ssid;
+            setStatus("扫描完成，共发现 " + list.length + " 个 WiFi");
+        })
+        .catch(() => {
+            setStatus("扫描失败，请重试");
+        });
+}
+
+function selectSSID() {
+    document.getElementById('ssid').value =
+        document.getElementById('wifiList').value;
+}
+
+function submit() {
+    if (!ssid.value) {
+        alert("SSID 不能为空");
+        return;
+    }
+    setStatus("已提交，设备正在连接 WiFi...");
+    fetch('/save', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'ssid=' + encodeURIComponent(ssid.value) +
+              '&password=' + encodeURIComponent(password.value)
+    });
+}
+
+window.onload = scanWifi;
+</script>
+</body>
+</html>

@@ -36,5 +36,6 @@ idf_component_register(SRCS "main.c"
                                 "wifi_time"
 "bt"
 
-                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash bt
+                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash bt esp_http_server
+                             EMBED_FILES "wifi.html"
                                  )

@@ -103,12 +103,14 @@ static void ble_host_task(void *param)
 /* ================= 对外初始化接口 ================= */
 void bt_init(void)
 {
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
-        ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        nvs_flash_init();
-    }
+
+    // wifi里面已经有了nvs初始化 不要再用了
+    // esp_err_t ret = nvs_flash_init();
+    // if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
+    //     ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    //     nvs_flash_erase();
+    //     nvs_flash_init();
+    // }
 
     ESP_ERROR_CHECK(nimble_port_init());
 
@@ -125,7 +127,7 @@ void bt_init(void)
 
 TaskHandle_t bt_task_handle = NULL;
 
- void bt_task(void *arg)
+void bt_task(void *arg)
 {
     uint32_t notify_value;
 
