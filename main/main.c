@@ -140,6 +140,15 @@ static void print_mem_task(void *arg)
   }
 }
 
+
+static void wifi_prov_task(void *arg)
+{
+    wifi_prov_run("ESP32S3", "123456789");
+    vTaskDelete(NULL);   // 配完就销毁
+}
+
+
+
 /* 主函数入口 */
 void app_main(void)
 {
@@ -153,12 +162,21 @@ void app_main(void)
   wifi_time_sys_init();
   ui_time_queue_init(); // 创建时间队列
 
-  // wifi_time_set_ap("RX-Bridge", "RX3.14159");
 
 
-    wifi_prov_run("ESP32-SETUP", "12345678");  // <- 你想改密码就改这里
+  // wifi_prov_run("ESP32-SETUP", "12345678");  // <- 你想改密码就改这里
 
+   xTaskCreate(
+        wifi_prov_task,
+        "wifi_prov",
+        8192 * 2,
+        NULL,
+        4,
+        NULL
+    );
     
+
+
   wifi_time_task_init(); // 持续执行更新函数
 
   sdcard_init();
