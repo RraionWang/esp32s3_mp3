@@ -9,6 +9,7 @@
 #define LCD_GPIO_DC         (GPIO_NUM_18)
 #define LCD_GPIO_CS         (GPIO_NUM_3)
 #define LCD_GPIO_BL         (GPIO_NUM_8)
+
 #define CTP_PIN_SCL         (GPIO_NUM_10)
 #define CTP_PIN_SDA         (GPIO_NUM_11)
 #define CTP_PIN_INT         (GPIO_NUM_12)

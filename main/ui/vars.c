@@ -288,3 +288,15 @@ void set_var_wifi_logo(const char *value) {
     wifi_logo[sizeof(wifi_logo) / sizeof(char) - 1] = 0;
 }
 
+
+
+char bat_voltage[100] = { 0 };
+
+const char *get_var_bat_voltage() {
+    return bat_voltage;
+}
+
+void set_var_bat_voltage(const char *value) {
+    strncpy(bat_voltage, value, sizeof(bat_voltage) / sizeof(char));
+    bat_voltage[sizeof(bat_voltage) / sizeof(char) - 1] = 0;
+}

@@ -76,21 +76,23 @@ typedef struct _objects_t {
     lv_obj_t *obj43;
     lv_obj_t *obj44;
     lv_obj_t *obj45;
-    lv_obj_t *bat_chart;
+    lv_obj_t *chart_container;
+    lv_obj_t *charge_led;
     lv_obj_t *obj46;
     lv_obj_t *obj47;
     lv_obj_t *obj48;
     lv_obj_t *obj49;
     lv_obj_t *obj50;
     lv_obj_t *obj51;
+    lv_obj_t *obj52;
     lv_obj_t *ram_bar;
     lv_obj_t *psram_bar;
-    lv_obj_t *obj52;
     lv_obj_t *obj53;
     lv_obj_t *obj54;
     lv_obj_t *obj55;
-    lv_obj_t *setting_menu;
     lv_obj_t *obj56;
+    lv_obj_t *setting_menu;
+    lv_obj_t *obj57;
 } objects_t;
 
 extern objects_t objects;

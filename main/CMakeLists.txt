@@ -21,6 +21,7 @@ idf_component_register(SRCS "main.c"
                                  "i2c_sensor/draw_cube.c"
                                    "wifi_time/wifi_time.c"
                                    "bt/bt.c"
+                                   "bat/bat.c"
 
                             
                     INCLUDE_DIRS "."
@@ -34,8 +35,9 @@ idf_component_register(SRCS "main.c"
                                 "record"
                                 "i2c_sensor"
                                 "wifi_time"
+                                "bat"
 "bt"
 
-                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash bt esp_http_server
+                     REQUIRES fatfs  esp_driver_i2s esp_wifi nvs_flash bt esp_http_server esp_adc
                              EMBED_FILES "wifi.html"
                                  )

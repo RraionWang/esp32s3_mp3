@@ -15,9 +15,9 @@
 static const char *TAG = "I2S_DEBUG";
 
 // Pin definitions
-#define EXAMPLE_STD_BCLK_IO1        45
-#define EXAMPLE_STD_WS_IO1          35
-#define EXAMPLE_STD_DIN_IO1         36
+#define EXAMPLE_STD_BCLK_IO1        38
+#define EXAMPLE_STD_WS_IO1          40
+#define EXAMPLE_STD_DIN_IO1         39
 
 
 
@@ -32,6 +32,7 @@ static const char *TAG = "I2S_DEBUG";
 #define RECORD_FILE_PATH MOUNT_POINT "/REC0001.WAV"
 
 
+#define MIC_GAIN  8   // 2, 4, 8 都可以试
 
     
 typedef struct {
@@ -141,8 +142,21 @@ void record_to_sd_task(void *args)
             if (bytes_read > 0) {
                 size_t frames = bytes_read / (sizeof(int32_t) * 2);
                 for (size_t i = 0; i < frames; ++i) {
+                    // int32_t sample = rx_buf[i * 2 + MIC_CHANNEL_INDEX];
+                    // out_buf[i] = (int16_t)(sample >> 16);
+
                     int32_t sample = rx_buf[i * 2 + MIC_CHANNEL_INDEX];
-                    out_buf[i] = (int16_t)(sample >> 16);
+
+/* 软件放大 */
+sample = sample * MIC_GAIN;
+
+/* 防止溢出（非常重要） */
+if (sample > INT32_MAX) sample = INT32_MAX;
+if (sample < INT32_MIN) sample = INT32_MIN;
+
+/* 转成 16bit */
+out_buf[i] = (int16_t)(sample >> 16);
+
                 }
                 size_t to_write = frames * bytes_per_sample;
                 if (bytes_written_total + to_write > bytes_target) {

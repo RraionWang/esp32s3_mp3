@@ -22,6 +22,7 @@
 #include "draw_cube.h"
 #include "wifi_time.h"
 #include "bt/bt.h"
+#include "bat/bat.h"
 
 static const char *TAG = "main";
 
@@ -155,6 +156,9 @@ void app_main(void)
 
   xTaskCreate(print_mem_task, "printmeme", 4096, NULL, 5, NULL);
 
+    sdcard_init();
+
+
   //   //  初始化录音
   //  init_mic_debug();
   // 目前录音电路有问题 废弃
@@ -163,10 +167,6 @@ void app_main(void)
   ui_time_queue_init(); // 创建时间队列
 
   wifi_reprovision_task_init() ; // 启动重复配网检测程序
-
-
-
-
 
    xTaskCreate(
         wifi_prov_task,
@@ -181,7 +181,7 @@ void app_main(void)
 
   wifi_time_task_init(); // 持续执行更新函数
 
-  sdcard_init();
+
 
   ESP_ERROR_CHECK(app_lcd_init());
   ESP_ERROR_CHECK(app_lvgl_init());
@@ -254,6 +254,50 @@ void app_main(void)
   // bt_task(); // 开启蓝牙任务
 
   // // 打印内存信息
+
+
+   /* 1. 初始化 ADC */
+    adc_gpio1_init();
+
+    /* 2. 创建 ADC 任务 */
+    xTaskCreate(
+        adc_gpio1_task,
+        "adc_gpio1_task",
+        4096,
+        NULL,
+        5,
+        NULL
+    );
+
+
+     chart_voltage_init();
+
+    xTaskCreate(
+        chart_voltage_task,
+        "chart_voltage_task",
+        4096,
+        NULL,
+        5,
+        NULL
+    );
+
+
+charge_state_init();
+
+    xTaskCreate(
+        charge_state_task,
+        "charge_state_task",
+        2048,
+        NULL,
+        5,
+        NULL
+    );
+
+
+//      init_mic_debug();
+
+//  xTaskCreate(record_to_sd_task, "record_to_sd_task", 8192, NULL, 5, NULL);
+
 }
 
 // 可以使用这种命令来进行播放的切换等等
