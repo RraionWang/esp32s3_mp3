@@ -68,7 +68,7 @@ void set_var_current_lrc(const char *value)
     // 如果相同就不修改
     if (strcmp(get_var_current_lrc(), value) == 0)
     {
-        ESP_LOGI("LRC", "歌词相同不修改");
+        // ESP_LOGI("LRC", "歌词相同不修改");
 
         return;
     }

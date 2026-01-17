@@ -215,6 +215,7 @@ void action_record_stop(lv_event_t *e)
     ESP_LOGI("REC", "停止录音");
     //  record_stop();
     // TODO: Implement action record_stop here
+     recorder_stop();
 }
 
 // 开始录音
@@ -224,6 +225,7 @@ void action_record_start(lv_event_t *e)
 
     ESP_LOGI("REC", "开始录音");
     //   record_start("/sdcard/rec_001.wav");
+     recorder_start();
 
     // TODO: Implement action record_start here
 }

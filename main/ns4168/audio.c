@@ -113,7 +113,7 @@ static bool lrc_load_file(const char *path)
     {
         s_lrc_count = 0;
         s_lrc_index = -1;
-        ESP_LOGE(TAG, "Failed to open LRC: %s", path);
+        // ESP_LOGE(TAG, "Failed to open LRC: %s", path);
         return false;
     }
 
@@ -261,11 +261,11 @@ static bool read_wav_header(FILE *fp)
     s_bytes_per_sec = sample_rate * channels * (bits_per_sample / 8);
     s_played_bytes = 0;
 
-    ESP_LOGI(TAG,
-             "WAV OK: %lu Hz, %u ch, %u bit, data=%lu bytes, %lu B/s",
-             sample_rate, channels, bits_per_sample,
-             (unsigned long)data_size,
-             (unsigned long)s_bytes_per_sec);
+    // ESP_LOGI(TAG,
+    //          "WAV OK: %lu Hz, %u ch, %u bit, data=%lu bytes, %lu B/s",
+    //          sample_rate, channels, bits_per_sample,
+    //          (unsigned long)data_size,
+    //          (unsigned long)s_bytes_per_sec);
 
 
              if (bits_per_sample != 8 &&
@@ -280,49 +280,23 @@ static bool read_wav_header(FILE *fp)
     return true;
 }
 
-
 static esp_err_t i2s_reconfig_from_wav(void)
 {
-    /* 1. 停止 I2S */
     ESP_ERROR_CHECK(i2s_channel_disable(s_tx_chan));
 
-    /* 2. 重新配置 std mode（覆盖旧配置） */
-    i2s_std_slot_config_t slot_cfg = {
-        .data_bit_width = I2S_DATA_BIT_WIDTH_16BIT,
-        .slot_bit_width = I2S_SLOT_BIT_WIDTH_16BIT,
-        .slot_mode = I2S_SLOT_MODE_STEREO,
-        .slot_mask = I2S_STD_SLOT_BOTH,
-        .ws_width = 16,
-        .ws_pol = false,
-        .bit_shift = false,
-        .left_align = false,
-        .big_endian = false,
-        .bit_order_lsb = false,
-    };
+    i2s_std_clk_config_t clk_cfg =
+        I2S_STD_CLK_DEFAULT_CONFIG(s_wav_sample_rate);
 
-    i2s_std_config_t std_cfg = {
-        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(s_wav_sample_rate),
-        .slot_cfg = slot_cfg,
-        .gpio_cfg = {
-            .bclk = SPK_BCLK_IO,
-            .ws   = SPK_WS_IO,
-            .dout = SPK_DATA_IO,
-            .din  = I2S_GPIO_UNUSED,
-        },
-    };
+    ESP_ERROR_CHECK(
+        i2s_channel_reconfig_std_clock(s_tx_chan, &clk_cfg)
+    );
 
-    /* 3. 重新 init std mode */
-    ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_tx_chan, &std_cfg));
-
-    /* 4. 再 enable */
     ESP_ERROR_CHECK(i2s_channel_enable(s_tx_chan));
 
-    ESP_LOGI(TAG,
-        "I2S reconfig OK: %lu Hz, %u ch, %u bit",
-        (unsigned long)s_wav_sample_rate,
-        s_wav_channels,
-        s_wav_bits
-    );
+    // ESP_LOGI(TAG,
+    //     "I2S clock reconfig OK: %lu Hz",
+    //     (unsigned long)s_wav_sample_rate
+    // );
 
     return ESP_OK;
 }
@@ -404,7 +378,7 @@ static bool open_current_track(void)
 
     if (!read_wav_header(s_current_file))
     {
-        i2s_reconfig_from_wav();
+    
 
         ESP_LOGE(TAG, "Invalid WAV header");
         fclose(s_current_file);
@@ -413,13 +387,15 @@ static bool open_current_track(void)
         return false;
     }
 
+        i2s_reconfig_from_wav();
+
     char lrc_path[128];
     strcpy(lrc_path, path);
     char *dot = strrchr(lrc_path, '.');
     if (dot)
         strcpy(dot, ".lrc");
 
-    ESP_LOGI("LRC", "文件名字是%s", lrc_path);
+    // ESP_LOGI("LRC", "文件名字是%s", lrc_path);
 
     if (!lrc_load_file(lrc_path))
     {
@@ -464,7 +440,7 @@ static bool open_current_track(void)
     }
 
     xSemaphoreGive(s_sd_mutex);
-    ESP_LOGI(TAG, "Now playing: %s at offset %ld", path, s_current_file_offset);
+    // ESP_LOGI(TAG, "Now playing: %s at offset %ld", path, s_current_file_offset);
     return true;
 }
 
@@ -744,8 +720,11 @@ for (int i = 0; i < frames; i++) {
     int16_t L = 0, R = 0;
 
     if (s_wav_bits == 8) {
-        int v = ((int)p[i * s_wav_channels] - 128) << 8;
-        L = R = v;
+        uint8_t u = p[i * s_wav_channels];
+int16_t v = ((int)u - 128) << 8;
+L = R = v;
+
+
     }
     else if (s_wav_bits == 16) {
         int16_t *q = (int16_t *)p;
@@ -757,10 +736,21 @@ for (int i = 0; i < frames; i++) {
         }
     }
     else if (s_wav_bits == 24) {
-        uint8_t *q = p + i * s_wav_channels * 3;
-        int32_t v = (q[2] << 24) | (q[1] << 16) | (q[0] << 8);
-        v >>= 16;
-        L = R = (int16_t)v;
+       uint8_t *q = p + i * s_wav_channels * 3;
+
+int32_t vl = (q[2] << 24) | (q[1] << 16) | (q[0] << 8);
+vl >>= 16;
+L = (int16_t)vl;
+
+if (s_wav_channels == 2) {
+    q += 3;
+    int32_t vr = (q[2] << 24) | (q[1] << 16) | (q[0] << 8);
+    vr >>= 16;
+    R = (int16_t)vr;
+} else {
+    R = L;
+}
+
     }
 
     L = (int16_t)((float)L * s_volume);
@@ -773,9 +763,16 @@ for (int i = 0; i < frames; i++) {
 
 
         size_t bytes_written = 0;
-        i2s_channel_write(s_tx_chan, i2s_buf,
-                          samples * 2 * sizeof(int16_t),
-                          &bytes_written, portMAX_DELAY);
+        size_t out_bytes = frames * 2 * sizeof(int16_t);
+
+i2s_channel_write(
+    s_tx_chan,
+    i2s_buf,
+    out_bytes,
+    &bytes_written,
+    portMAX_DELAY
+);
+
     }
 
     free(file_buf);

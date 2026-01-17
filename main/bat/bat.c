@@ -110,7 +110,7 @@ static void chart_async_update_cb(void *user_data)
     if (!s_chart || !s_series) return;
 
     lv_chart_set_next_value(s_chart, s_series, value);
-    // lv_chart_refresh(s_chart);
+     lv_chart_refresh(s_chart);
 }
 
 /* ================= 初始化 ================= */

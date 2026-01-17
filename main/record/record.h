@@ -1,20 +1,25 @@
-// record.h
 #pragma once
 
-#include "esp_err.h"
 #include <stdbool.h>
+#include "esp_err.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* 录音命令 */
+typedef enum {
+    REC_CMD_START,
+    REC_CMD_STOP,
+} recorder_cmd_t;
 
-  void  init_mic_debug(void);
+/* 初始化（I2S + 任务 + 队列） */
+esp_err_t recorder_init(void);
 
+/* 开始录音（自动分配 REC0000~REC9999） */
+esp_err_t recorder_start(void);
 
-    
-void record_to_sd_task(void *args);
+/* 停止录音 */
+esp_err_t recorder_stop(void);
 
+/* 当前是否正在录音 */
+bool recorder_is_recording(void);
 
-#ifdef __cplusplus
-}
-#endif
+/* 当前录音文件路径（录音中才有效） */
+const char *recorder_current_path(void);

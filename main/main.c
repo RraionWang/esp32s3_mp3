@@ -142,11 +142,11 @@ static void print_mem_task(void *arg)
 }
 
 
-static void wifi_prov_task(void *arg)
-{
-    wifi_prov_run("ESP32S3", "123456789");
-    vTaskDelete(NULL);   // 配完就销毁
-}
+// static void wifi_prov_task(void *arg)
+// {
+//     wifi_prov_run("ESP32S3", "123456789");
+//     vTaskDelete(NULL);   // 配完就销毁
+// }
 
 
 
@@ -163,23 +163,23 @@ void app_main(void)
   //  init_mic_debug();
   // 目前录音电路有问题 废弃
 
-  wifi_time_sys_init();
-  ui_time_queue_init(); // 创建时间队列
+  // wifi_time_sys_init();
+  // ui_time_queue_init(); // 创建时间队列
 
-  wifi_reprovision_task_init() ; // 启动重复配网检测程序
+  // wifi_reprovision_task_init() ; // 启动重复配网检测程序
 
-   xTaskCreate(
-        wifi_prov_task,
-        "wifi_prov",
-        8192 * 2,
-        NULL,
-        4,
-        NULL
-    );
+  //  xTaskCreate(
+  //       wifi_prov_task,
+  //       "wifi_prov",
+  //       8192 * 2,
+  //       NULL,
+  //       4,
+  //       NULL
+  //   );
     
 
 
-  wifi_time_task_init(); // 持续执行更新函数
+  // wifi_time_task_init(); // 持续执行更新函数
 
 
 
@@ -199,12 +199,12 @@ void app_main(void)
     lvgl_port_unlock();
   }
 
-  if (lvgl_port_lock(0))
-  {
+  // if (lvgl_port_lock(0))
+  // {
 
-    lv_timer_create(lvgl_ui_wifitimer_timer_cb, 500, NULL);
-    lvgl_port_unlock();
-  }
+  //   lv_timer_create(lvgl_ui_wifitimer_timer_cb, 500, NULL);
+  //   lvgl_port_unlock();
+  // }
 
   ui_time_timer_start(); // 开启定时器
 
@@ -297,7 +297,7 @@ charge_state_init();
 //      init_mic_debug();
 
 //  xTaskCreate(record_to_sd_task, "record_to_sd_task", 8192, NULL, 5, NULL);
-
+recorder_init();        // 开机调用一次
 }
 
 // 可以使用这种命令来进行播放的切换等等
